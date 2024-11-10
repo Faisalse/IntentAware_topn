@@ -20,11 +20,11 @@
 <h5>Selected articles</h5>
 
 <ul>
-<li>Disentangled Graph Collaborative Filtering (SIGIR'2020)</li>
-<li>Learning Intents behind Interactions with Knowledge Graph for Recommendation (WWW'2021) </li>
-<li>Intent Disentanglement and Feature Self-Supervision for Novel Recommendation (Journal: IEEE Transactions on Knowledge and Data Engineering'2022 - IF: 8.9) </li>
-<li>Disentangled Contrastive Collaborative Filtering (SIGIR'2023) </li>
-<li>Exploring the Individuality and Collectivity of Intents behind Interactions for Graph Collaborative Filtering (SIGIR'2024) </li>
+<li>Disentangled Graph Collaborative Filtering (SIGIR'20)</li>
+<li>Learning Intents behind Interactions with Knowledge Graph for Recommendation (WWW'21) </li>
+<li>Intent Disentanglement and Feature Self-Supervision for Novel Recommendation (Journal: IEEE Transactions on Knowledge and Data Engineering'22 - IF: 8.9) </li>
+<li>Disentangled Contrastive Collaborative Filtering (SIGIR'23) </li>
+<li>Exploring the Individuality and Collectivity of Intents behind Interactions for Graph Collaborative Filtering (SIGIR'24) </li>
 </ul>
 
 <h5>Required libraries to run the framework</h5>
