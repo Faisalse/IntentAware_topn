@@ -20,17 +20,10 @@
 <h5>Selected articles</h5>
 
 <ul>
-<li> Modeling Multi-Purpose Sessions for Next-Item Recommendations via Mixture-Channel Purpose Routing Networks (JCAI'19)</li> 
 <li>Disentangled Graph Collaborative Filtering (SIGIR'2020)</li>
 <li>Learning Intents behind Interactions with Knowledge Graph for Recommendation (WWW'2021) </li>
-<li> Intent Contrastive Learning for Sequential Recommendation (WWW'22)</li>
-<li>Enhancing Hypergraph Neural Networks with Intent Disentanglement for Session-based Recommendation (SIGIR'2022)</li>
-<li>Dynamic Intent Aware Iterative Denoising Network for Session-based Recommendation (Journal: Information Processing & Management'2022 - IF: 7.4)</li> 
 <li>Intent Disentanglement and Feature Self-Supervision for Novel Recommendation (Journal: IEEE Transactions on Knowledge and Data Engineering'2022 - IF: 8.9) </li>
-<li>Efficiently Leveraging Multi-level User Intent for Session-based Recommendation via Atten-Mixer Network (WSDM'23)</li>
-<li>Sparse-Interest Network for Sequential Recommendation (WSDM'23)</li>  
 </ul>
-
 
 <h5>Required libraries to run the framework</h5>
 <ul>
@@ -91,57 +84,12 @@
 
 
 <h2>Instructions to Run Experiments for Intent Aware and Non-intent Aware Recommender Systems</h2>
-
-
-<h5> Dynamic Intent-aware Iterative Denoising Network for Session-based Recommendation (DIDN)</h5>
-<ul>
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Yoochoose</a> dataset, unzip it and put the "yoochoose-clicks.dat" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the DIDN and baseline models on the shorter version of the Yoochoose dataset: <code>python run_experiments_for_DIDN_baseline_models.py --dataset yoochoose1_64</code> and run the following command to create the experiments for the larger version of the Yoochoose dataset <code>python run_experiments_for_DIDN_baseline_models.py --dataset yoochoose1_4</code>  </li>
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Diginetica</a> dataset, unzip it and put the "train-item-views.csv" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the DIDN and baseline models on the Diginetica dataset: <code>python run_experiments_for_DIDN_baseline_models.py --dataset diginetica</code></li> 
-</ul>
-
-<h5>Enhancing Hypergraph Neural Networks with Intent Disentanglement for Session-based Recommendation (HIDE)</h5>
-<ul>
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Tmall</a> dataset, unzip it and put the "dataset15.csv" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the HIDE and baseline models on the Tmall dataset: <code>python run_experiments_HIDE_baseline_models.py --dataset Tmall</code></li>
-</ul>
-
-<h5>Modeling Multi-Purpose Sessions for Next-Item Recommendations via Mixture-Channel Purpose Routing Networks (Atten-Mixer)</h5>
-<ul>
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Diginetica</a> dataset, unzip it and put the "train-item-views.csv" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the Atten-Mixer and baseline models on the Diginetica dataset: <code>python run_experiments_AttenMixer_baseline_models.py --dataset diginetica</code></li>
-
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Gowalla</a> dataset, unzip it and put the "loc-gowalla_totalCheckins.txt.gz" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the Atten-Mixer and baseline models on the Gowalla dataset: <code>python run_experiments_AttenMixer_baseline_models.py --dataset gowalla</code></li>
-
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Yoochoose</a> dataset, unzip it and put the "yoochoose-clicks.dat" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the Atten-Mixer and baseline models on the shorter version of the Yoochoose dataset: <code>python python run_experiments_AttenMixer_baseline_models.py --dataset yoochoose1_64</code> and run the following command to create the experiments for the larger version of the Yoochoose dataset <code>python python run_experiments_AttenMixer_baseline_models.py --dataset yoochoose1_4</code>  </li>
-
-
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Retailrocket</a> dataset, unzip it and put the "events.csv" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the Atten-Mixer and baseline models on the Diginetica dataset: <code>python run_experiments_AttenMixer_baseline_models.py --dataset retailrocket</code></li>
-</ul>
-
-
-
-
-<h5>Efficiently Leveraging Multi-level User Intent for Session-based Recommendation via Atten-Mixer Network (MCPRN)</h5>
-<ul>
-<li>Download <a href="https://drive.google.com/drive/folders/1GocLZfbuwtxUjdRVEKq9xONyDbOjoNm4?usp=sharing" target="_blank">Yoochoose</a> dataset, unzip it and put the "yoochoose-buys.csv" file into the "data" directory/folder </li>
-<li>Run this command to reproduce the experiments for the MCPRN and baseline models on the Yoochoose-buys dataset: <code>python run_experiments_for_MCRPN_baseline_models.py --dataset yoochoose</code></li>
-</ul>
-
-
-
- 
-
-<h5>Learning Intents behind Interactions with Knowledge Graph for Recommendation (KIGN)</h5>
-<ul>
+<h5>Learning Intents behind Interactions with Knowledge Graph for Recommendation (KIGN)</h5><ul>
 <li>Run this command to reproduce the experiments for the KGIN and baseline models on the lastFm dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset lastFm</code>  </li>
 <li>Run this command to reproduce the experiments for the KGIN and baseline models on the alibabaFashion dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset alibabaFashion</code>  </li>
 <li>Run this command to reproduce the experiments for the KGIN and baseline models on the amazonBook dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset amazonBook</code>  </li>
 </ul>
+
 
 
 
@@ -159,12 +107,12 @@
 
 <h5>Disentangled Graph Collaborative Filtering (DGCF)</h5>
 <ul>
-<li>Run this command to reproduce the experiments for the DGCF on the Yelp2018 dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset yelp2018</code>  </li>
-<li>Run this command to reproduce the experiments for the baseline models on the Yelp2018 dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset yelp2018</code>  </li>
-<li>Run this command to reproduce the experiments for the DGCF on the Gowalla dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset gowalla</code>  </li>
-<li>Run this command to reproduce the experiments for the baseline models on the Gowalla dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset gowalla</code>  </li>
-<li>Run this command to reproduce the experiments for the DGCF on the Amazon-book dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset amazonbook</code>  </li>
-<li>Run this command to reproduce the experiments for the baseline models on the Amazon-book dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset amazonbook</code>  </li>
+<li>Run this command to reproduce the experiments for the DGCF on the Yelp2018 dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset yelp2018</code><li>
+<li>Run this command to reproduce the experiments for the baseline models on the Yelp2018 dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset yelp2018</code></li>
+<li>Run this command to reproduce the experiments for the DGCF on the Gowalla dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset gowalla</code></li>
+<li>Run this command to reproduce the experiments for the baseline models on the Gowalla dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset gowalla</code></li>
+<li>Run this command to reproduce the experiments for the DGCF on the Amazon-book dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset amazonbook</code></li>
+<li>Run this command to reproduce the experiments for the baseline models on the Amazon-book dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset amazonbook</code><li>
 
 <h5>Note: The DGCF was implemented using TensorFlow 1.14, which does not support current versions of Python. Therefore, we provide a separate installation guide to run the experiments for DGCF model</h5>
 
@@ -178,7 +126,6 @@
     <li>Run this command to activate the virtual environment: <code>conda activate DGCF_env</code></li>
     <li>Run this command to install the required libraries for CPU: <code>pip install -r requirements_dgcf.txt</code></li>
   </ul>
-
 </body>
 </html>  
 
