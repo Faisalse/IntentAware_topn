@@ -17,7 +17,7 @@
   <li><a href="https://rn5l.github.io/session-rec/index.html" target="_blank">Session rec framework</a></li>
   <li><a href="https://github.com/MaurizioFD/RecSys2019_DeepLearning_Evaluation.git" target="_blank"> RecSys2019_DeepLearning_Evaluation  framework </a></li>
 </ul>
-<h5>Selected articles</h5>
+<h5>Reproduced articles</h5>
 
 <ul>
 <li>Disentangled Graph Collaborative Filtering (SIGIR'20)</li>
