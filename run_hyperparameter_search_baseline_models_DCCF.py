@@ -12,7 +12,8 @@ from functools import partial
 from pathlib import Path
 import os, multiprocessing
 import argparse
-def run_experiments_for_IDSNR_Model():
+import numpy as np
+def run_experiments_for_DCCF_Model():
     """
     This function provides a simple example on how to tune parameters of a given algorithm
     The BayesianSearch object will save:
@@ -27,45 +28,48 @@ def run_experiments_for_IDSNR_Model():
 
     args = parser.parse_args()
     dataset_name = args.dataset
-    model = "BIGCF"
+    model = "DCCF"
     task = "optimization"
     commonFolderName = "results"
-    
     data_path = Path("data/DCCF/"+dataset_name)
     data_path = data_path.resolve()
-    
-    
     validation_set = True
+    validation_portion = 0.1
     dataset_object = Gowalla_AmazonBook_Tmall_DCCF()
-    URM_train,URM_validation, URM_test = dataset_object._load_data_from_give_files(data_path, validation=validation_set)
+    URM_train, URM_test, URM_validation_train, URM_validation_test = dataset_object._load_data_from_give_files(data_path, validation=validation_set, validation_portion = validation_portion)
     saved_results = "/".join([commonFolderName,model,dataset_name, task] )
-
+    print("Totla number of users:  "+str(URM_train.shape[0]))
+    print("Totla number of items:  "+str(URM_train.shape[1]))
+    print("Number of users in the training data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_train)))
+    print("Number of users in the test data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_test)))
+    print("Number of users in the train validation data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_validation_train)))
+    print("Number of users in the test validation data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_validation_test)))
+    
 
     # If directory does not exist, create
     if not os.path.exists(saved_results):
         os.makedirs(saved_results+"/")
     # model to optimize
     collaborative_algorithm_list = [
-    
-        P3alphaRecommender
-        #RP3betaRecommender
-        #ItemKNNCFRecommender
-        #UserKNNCFRecommender
-        #EASE_R_Recommender
-
+        P3alphaRecommender,
+        RP3betaRecommender,
+        ItemKNNCFRecommender,
+        UserKNNCFRecommender,
+        EASE_R_Recommender
     ]
     from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
     cutoff_list = [20]
     metric_to_optimize = "RECALL"
     cutoff_to_optimize = 20
 
-    n_cases = 10
+    n_cases = 35
     n_random_starts = 5
 
-    evaluator_validation = EvaluatorHoldout(URM_validation, cutoff_list = cutoff_list)
+    evaluator_validation = EvaluatorHoldout(URM_validation_test, cutoff_list = cutoff_list)
     evaluator_test = EvaluatorHoldout(URM_test, cutoff_list = cutoff_list)
     runParameterSearch_Collaborative_partial = partial(runHyperparameterSearch_Collaborative,
-                                                       URM_train = URM_train,
+                                                       URM_train = URM_validation_train,
+                                                       URM_train_last_test = URM_train,
                                                        metric_to_optimize = metric_to_optimize,
                                                        cutoff_to_optimize = cutoff_to_optimize,
                                                        n_cases = n_cases,
@@ -76,24 +80,16 @@ def run_experiments_for_IDSNR_Model():
                                                        output_folder_path = saved_results,
                                                        resume_from_saved = True,
                                                        similarity_type_list = ["cosine"],
-                                                       parallelizeKNN = False)
+                                                       parallelizeKNN = False, allow_weighting = True)
 
 
     pool = multiprocessing.Pool(processes=int(multiprocessing.cpu_count()), maxtasksperchild=1)
     pool.map(runParameterSearch_Collaborative_partial, collaborative_algorithm_list)
 
-
-
-
-
-
-
-
-
-
-
+def numberOfUsersWithNoEntries(sparse_matrix):
+    row_sums = sparse_matrix.getnnz(axis=1)
+    zero_rows_count = np.sum(row_sums == 0)
+    return zero_rows_count
 
 if __name__ == '__main__':
-
-
-    run_experiments_for_IDSNR_Model()
+    run_experiments_for_DCCF_Model()

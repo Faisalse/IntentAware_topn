@@ -8,7 +8,7 @@ Created on 31/10/18
 try:
     import tensorflow as tf
 except ImportError:
-    print("Tensorflow is not available")
+    print("")
 
 import os,  shutil, zipfile
 

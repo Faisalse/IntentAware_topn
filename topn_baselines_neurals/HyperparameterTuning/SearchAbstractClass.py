@@ -20,7 +20,7 @@ try:
     from tensorflow.python.framework.errors_impl import ResourceExhaustedError, InternalError, UnknownError
     MEMORY_ERROR_EXCEPTION_TUPLE += (ResourceExhaustedError, InternalError, UnknownError,)
 except ImportError:
-    print("Tensorflow is not available")
+    print("")
 
 
 

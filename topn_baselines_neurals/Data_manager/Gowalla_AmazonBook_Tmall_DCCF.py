@@ -11,7 +11,7 @@ import zipfile, shutil
 from topn_baselines_neurals.Data_manager.DataReader import DataReader
 from topn_baselines_neurals.Data_manager.DatasetMapperManager import DatasetMapperManager
 from topn_baselines_neurals.Data_manager.Movielens._utils_movielens_parser import _loadURM, _loadICM_genres_years
-from topn_baselines_neurals.Data_manager.split_functions.DCCG_given_train_test_splits import split_train_test_validation
+from topn_baselines_neurals.Data_manager.split_functions.DCCF_given_train_test_splits import split_train_test_validation
 
 
 class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
@@ -26,7 +26,7 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
     
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
-    def _load_data_from_give_files(self, datapath, validation = False ):
+    def _load_data_from_give_files(self, datapath, validation = False , validation_portion = 0.1):
         
         
         zipFile_path = datapath
@@ -73,8 +73,8 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
                                                           is_implicit=self.IS_IMPLICIT)
         
         if validation == True:
-            URM_train, URM_Validation, URM_test = split_train_test_validation(loaded_dataset, test_dictionary, validation=validation)
-            return URM_train, URM_Validation, URM_test
+            URM_train, URM_test, URM_validation_train, URM_validation_test = split_train_test_validation(loaded_dataset, test_dictionary, validation=validation, validation_portion = validation_portion)
+            return URM_train, URM_test, URM_validation_train, URM_validation_test
         else:
             URM_train, URM_test = split_train_test_validation(loaded_dataset, test_dictionary,   validation=validation)
             return URM_train, URM_test

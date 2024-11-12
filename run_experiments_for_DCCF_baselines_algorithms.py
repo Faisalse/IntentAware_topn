@@ -23,7 +23,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='amazonbook', help="amazonbook / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='gowalla', help="amazonbook / gowalla / tmall")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -31,7 +31,12 @@ if __name__ == '__main__':
     data_path = Path("data/DCCF/"+dataset_name)
     data_path = data_path.resolve()
     start = time.time()
-    
+    commonFolderName = "results"
+    model = "DCCF"
+    saved_results = "/".join([commonFolderName, model] )
+    if not os.path.exists(saved_results):
+        os.makedirs(saved_results)
+    """
     best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks)
     print("Start tuning by Best Epoch Value"+str(best_epoch))
     best_score = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = best_epoch , ks = args.Ks)
@@ -49,13 +54,9 @@ if __name__ == '__main__':
                 print(key+"@"+str(normal_list[i]) +":"+str(best_score[key][i]))
     df["Time(seconds)"] = [end - start]
 
-    commonFolderName = "results"
-    model = "DCCF"
-    saved_results = "/".join([commonFolderName, model] )
-    if not os.path.exists(saved_results):
-        os.makedirs(saved_results)
+
     df.to_csv(saved_results + "/"+args.dataset+"_DCCF.txt", index = False)
-    
+    """
     ############### prepare baseline data ###############
     baseline_models = "baseline_models"
     validation_set = False
@@ -75,7 +76,6 @@ if __name__ == '__main__':
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
     recommender_class_list = [
-        Random,
         TopPop,
         ItemKNNCFRecommender,
         UserKNNCFRecommender,
