@@ -47,6 +47,7 @@ for key in result_dict:
         print( key +": "   +str(result_dict[key].getScore())  )
         df[key] = [result_dict[key].getScore()]
 df.to_csv(saved_results+model+"_"+args.dataset+".txt")
+
 # python run_experiments_for_DGCF_algorithm.py --dataset yelp2018
 # python run_experiments_for_DGCF_algorithm.py --dataset gowalla
 # python run_experiments_for_DGCF_algorithm.py --dataset amazonbook

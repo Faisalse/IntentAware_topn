@@ -48,10 +48,7 @@ def split_train_test_validation(loaded_dataset, given_test_data, validation = Fa
 
         start_user_position = URM.indptr[user_id]
         end_user_position = URM.indptr[user_id+1]
-
         user_profile = URM.indices[start_user_position:end_user_position]
-
-
         # remove test items from the traning data
         user_profile = list(user_profile)
         for item_ in test_records_items:

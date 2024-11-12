@@ -21,8 +21,7 @@ def parse_args():
     parser.add_argument('--n_intents', type=int, default=128, help='Number of latent intents')
     parser.add_argument('--temp', type=float, default=1, help='temperature in ssl loss')
     parser.add_argument('--show_step', type=int, default=1, help='Test every show_step epochs.')
-    parser.add_argument('--Ks', nargs='?', default='[20, 40]', help='Metrics scale')
     parser.add_argument('--patience', type=int, default=20, help='Patience')
-    
+    parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
 
     return parser.parse_args()

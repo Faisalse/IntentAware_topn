@@ -66,24 +66,17 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
         user_interaction_items_test = test_records_items
         user_interaction_data_test = test_data
         URM_test_builder.add_data_lists([user_id]*len(user_interaction_items_test), user_interaction_items_test, user_interaction_data_test)
-        if len(user_profile) > 0:
+        if len(user_profile) > 0 and int(len(user_profile) * 0.1) > 0 and use_validation_set == True:
             
-        #validation interactions
-            if use_validation_set:
-                user_interaction_items_validation = user_interaction_items[0:k_out]
-                user_interaction_data_validation = user_interaction_data[0:k_out]
-                URM_validation_builder.add_data_lists([user_id]*k_out, user_interaction_items_validation, user_interaction_data_validation)
+            k_out = int(len(user_profile)) - int(len(user_profile) * 0.1)
+                
+            user_interaction_items_validation = user_interaction_items[k_out:]
+            user_interaction_data_validation = user_interaction_data[k_out:]
+            URM_validation_builder.add_data_lists([user_id]*len(user_interaction_data_validation), user_interaction_items_validation, user_interaction_data_validation)
 
-
-                #Train interactions
-                user_interaction_items_train = user_interaction_items[k_out:]
-                user_interaction_data_train = user_interaction_data[k_out:]
-                URM_train_builder.add_data_lists([user_id]*len(user_interaction_items_train), user_interaction_items_train, user_interaction_data_train)
-            else:
-                user_interaction_items_train = user_interaction_items
-                user_interaction_data_train = user_interaction_data
-                URM_train_builder.add_data_lists([user_id]*len(user_interaction_items_train), user_interaction_items_train, user_interaction_data_train)
-
+            user_interaction_items_train = user_interaction_items[0:k_out]
+            user_interaction_data_train = user_interaction_data[0:k_out]
+            URM_train_builder.add_data_lists([user_id]*len(user_interaction_items_train), user_interaction_items_train, user_interaction_data_train)
 
 
     URM_train = URM_train_builder.get_SparseMatrix()

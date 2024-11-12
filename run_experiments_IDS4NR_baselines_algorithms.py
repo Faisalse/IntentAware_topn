@@ -1,14 +1,13 @@
 
 from topn_baselines_neurals.Recommenders.Recommender_import_list import *
-from topn_baselines_neurals.Data_manager.Movielens.Movielens1MReader import Movielens1MReader
-from topn_baselines_neurals.Data_manager.DataSplitter_leave_k_out import DataSplitter_leave_k_out
 from topn_baselines_neurals.Recommenders.Incremental_Training_Early_Stopping import Incremental_Training_Early_Stopping
 from topn_baselines_neurals.Recommenders.BaseCBFRecommender import BaseItemCBFRecommender, BaseUserCBFRecommender
 from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
+from topn_baselines_neurals.Recommenders.IDS4NR.IDSNR import *
 from topn_baselines_neurals.Data_manager.Movielens.Movielens100MReaderGiven import Movielens100MReaderGiven
 import traceback, os
-from topn_baselines_neurals.Recommenders.IDS4NR.IDSNR import *
 import argparse
+
 from pathlib import Path
 def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     if issubclass(recommender_class, BaseItemCBFRecommender):
@@ -30,11 +29,10 @@ if __name__ == '__main__':
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset MovieLens --model NCF
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset Beauty --model NCF
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset Music --model NCF
-
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset MovieLens --model LFM
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset Beauty --model LFM
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset Music --model LFM
-
+    
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
     commonFolderName = "results"
     data_path = Path("data/ID4SNR/")
@@ -64,7 +62,7 @@ if __name__ == '__main__':
         RP3betaRecommender,
         EASE_R_Recommender
         ]
-    evaluator = EvaluatorHoldout(URM_test, [5,10, 20], exclude_seen=True)
+    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)
     logFile = open(output_root_path + "result_all_algorithms.txt", "a")
     for recommender_class in recommender_class_list:
         try:

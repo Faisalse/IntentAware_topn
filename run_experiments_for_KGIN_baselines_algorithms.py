@@ -1,18 +1,16 @@
 
 from topn_baselines_neurals.Recommenders.Knowledge_Graph_based_Intent_Network_KGIN_WWW.run_experiments_KGIN_ import *
-from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
-from topn_baselines_neurals.Recommenders.Recommender_import_list import *
 from topn_baselines_neurals.Data_manager.lastFM_AmazonBook_AliBabaFashion_KGIN import lastFM_AmazonBook_AliBabaFashion_KGIN 
 from topn_baselines_neurals.Recommenders.Incremental_Training_Early_Stopping import Incremental_Training_Early_Stopping
 from topn_baselines_neurals.Recommenders.BaseCBFRecommender import BaseItemCBFRecommender, BaseUserCBFRecommender
-import traceback, os
-import time
+from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
+from topn_baselines_neurals.Recommenders.Recommender_import_list import *
 from pathlib import Path
+import traceback, os
 import argparse
-
+import time
 
 def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
-
     if issubclass(recommender_class, BaseItemCBFRecommender):
         recommender_object = recommender_class(URM_train, ICM_all)
     elif issubclass(recommender_class, BaseUserCBFRecommender):
@@ -22,12 +20,11 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
     commonFolderName = "results"
-    
     task = "training"
     data_path = Path("data/KGIN/"+dataset_name)
     data_path = data_path.resolve()
@@ -56,7 +53,7 @@ if __name__ == '__main__':
         context_hops=3
         epoch = 60
     elif dataset_name == "alibabaFashion":
-        
+    
         dim=64
         lr= 0.0001
         sim_regularity=0.0001
@@ -66,8 +63,9 @@ if __name__ == '__main__':
         mess_dropout=True 
         mess_dropout_rate=0.1 
         gpu_id=0
-        context_hops=3
+        context_hops= 3
         epoch = 60
+
     elif dataset_name == "amazonBook":
         dataset= data_path
         dim=64
@@ -125,7 +123,7 @@ if __name__ == '__main__':
         RP3betaRecommender,
         EASE_R_Recommender
         ]
-    evaluator = EvaluatorHoldout(URM_test, [5,10, 20], exclude_seen=True)
+    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)
     logFile = open(output_root_path + "result_all_algorithms.txt", "a")
     for recommender_class in recommender_class_list:
         try:

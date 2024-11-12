@@ -23,11 +23,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='amazonbook', help="yelp2018, gowalla, amazonbook")
 
-    # python run_experiments_DGCF_baseline_algorithms.py --dataset yelp2018
-    # python run_experiments_DGCF_baseline_algorithms.py --dataset gowalla
-    # python run_experiments_DGCF_baseline_algorithms.py --dataset amazonbook
-
-
     args = parser.parse_args()
     dataset_name = args.dataset
     commonFolderName = "results"
@@ -35,12 +30,14 @@ if __name__ == '__main__':
     data_path = data_path.resolve()
     validation_set = False
     datasetName = args.dataset+".pkl"
+    
     model = "DGCF"
     validation_set = False
     dataset_object = Gowalla_Yelp_Amazon_DGCF()
     URM_train, URM_test = dataset_object._load_data_from_give_files(validation=validation_set, data_name = data_path / dataset_name)
     ICM_all = None
     UCM_all = None
+
     saved_results = "/".join([commonFolderName,model,args.dataset] )
     # If directory does not exist, create
     if not os.path.exists(saved_results):

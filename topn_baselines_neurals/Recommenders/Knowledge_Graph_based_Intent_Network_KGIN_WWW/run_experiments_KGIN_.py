@@ -10,17 +10,14 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from time import time
-from prettytable import PrettyTable
 import pandas as pd
 import argparse
-
 from topn_baselines_neurals.Recommenders.Knowledge_Graph_based_Intent_Network_KGIN_WWW.utils.data_loader import load_data
 from topn_baselines_neurals.Recommenders.Knowledge_Graph_based_Intent_Network_KGIN_WWW.modules.KGIN import Recommender
 from topn_baselines_neurals.Recommenders.Knowledge_Graph_based_Intent_Network_KGIN_WWW.utils.evaluate import model_evaluation
 
 
 def get_feed_dict(train_entity_pairs, start, end, train_user_set, n_items):
-
     def negative_sampling(user_item, train_user_set):
         neg_items = []
         for user, _ in user_item.cpu().numpy():

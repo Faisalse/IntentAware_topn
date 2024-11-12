@@ -13,8 +13,7 @@ from topn_baselines_neurals.Recommenders.Knowledge_Graph_based_Intent_Network_KG
 # Dictionary to store results
 Recall_ = dict()
 NDCG_ = dict()
-
-for i in [20]:
+for i in [1, 5, 10, 20, 50, 100]:
     Recall_["Recall_"+str(i)] = Recall(i)
     NDCG_["NDCG"+str(i)] = NDCG(i)
 Recall_.update(NDCG_)
@@ -24,7 +23,6 @@ Ks = eval(args.Ks)
 device = torch.device("cuda:" + str(args.gpu_id)) if args.cuda else torch.device("cpu")
 BATCH_SIZE = args.test_batch_size
 batch_test_flag = args.batch_test_flag
-
 
 def ranklist_by_heapq(user_pos_test, test_items, rating, Ks):
     item_score = {}

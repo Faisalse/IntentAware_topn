@@ -57,7 +57,7 @@ def load_adjacency_list_data(adj_mat):
 
     return all_h_list, all_t_list, all_v_list
 
-def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500):
+def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ks = [1,5, 10, 20]):
 
     """
     *********************************************************
@@ -76,6 +76,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
     args.dataset = dataset_name
     args.epoch = epoch
     args.data_path = path
+    args.Ks = ks
 
     """
     *********************************************************
@@ -146,7 +147,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
                 _model.eval()
                 _model.inference()
                 final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
-            recall = final_test_ret["recall"][0]
+            recall = final_test_ret["recall"][3]
 
             print ("Patience value: ", str(earlystopping.patience), "Counter value: ", str(earlystopping.counter),
                     " Best Previous Recall Score: ",str(earlystopping.best_score), " Current Recall:", str(recall) )

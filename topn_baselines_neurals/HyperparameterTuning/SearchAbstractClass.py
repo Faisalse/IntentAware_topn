@@ -8,10 +8,10 @@ Created on 10/03/2018
 
 import time, os, traceback
 import pandas as pd
-from Recommenders.Incremental_Training_Early_Stopping import Incremental_Training_Early_Stopping
+from topn_baselines_neurals.Recommenders.Incremental_Training_Early_Stopping import Incremental_Training_Early_Stopping
 import numpy as np
-from Recommenders.DataIO import DataIO
-from Evaluation.Evaluator import get_result_string_df
+from topn_baselines_neurals.Recommenders.DataIO import DataIO
+from topn_baselines_neurals.Evaluation.Evaluator import get_result_string_df
 from numpy.core._exceptions import _ArrayMemoryError
 
 MEMORY_ERROR_EXCEPTION_TUPLE = (_ArrayMemoryError, MemoryError)

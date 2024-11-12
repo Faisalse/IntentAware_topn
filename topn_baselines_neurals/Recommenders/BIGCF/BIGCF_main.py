@@ -56,7 +56,7 @@ def load_adjacency_list_data(adj_mat):
 
     return all_h_list, all_t_list, all_v_list
 
-def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ssl_reg = 0.4):
+def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ssl_reg = 0.4, ks = [20, 40]):
     if not os.path.exists('log'):
         os.mkdir('log')
     logger = logging.getLogger('train_logger')
@@ -71,6 +71,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
     args.epoch = epoch
     args.data_path = path
     args.ssl_reg = ssl_reg
+    args.Ks = ks
 
     """
     *********************************************************
@@ -139,7 +140,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
                 _model.inference()
                 final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
                 torch.cuda.empty_cache()
-            recall = final_test_ret["recall"][0]
+            recall = final_test_ret["recall"][3]
 
             print ("Patience value: ", str(earlystopping.patience), "Counter value: ", str(earlystopping.counter),
                     " Best Previous Recall Score: ",str(earlystopping.best_score), " Current Recall:", str(recall) )
