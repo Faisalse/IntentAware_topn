@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='Music', help="MovieLens/Music/Beauty")
-    parser.add_argument('--model', type = str, default='LFM', help="LFM or NCF")
+    parser.add_argument('--model', type = str, default='NCF', help="LFM or NCF")
     args = parser.parse_args()
     dataset_name = args.dataset
 
