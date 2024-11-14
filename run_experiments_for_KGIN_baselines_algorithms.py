@@ -20,7 +20,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='alibabaFashion', help="alibabaFashion / amazonBook / lastFm")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -29,7 +29,6 @@ if __name__ == '__main__':
     data_path = Path("data/KGIN/"+dataset_name)
     data_path = data_path.resolve()
     # If directory does not exist, create
-    
     ############### prepare baseline data ###############
     baseline_models = "baseline_models"
     validation_set = False
@@ -39,7 +38,7 @@ if __name__ == '__main__':
     UCM_all = None
     ################# end to prepare baseline data #################
     start = time.time()
-    
+    """
     if dataset_name == "lastFm":
         dim=64
         lr= 0.0001
@@ -103,6 +102,7 @@ if __name__ == '__main__':
     end = time.time()
     result_df["Time(seconds)"] = end - start
     result_df.to_csv(saved_results_dl+"KGIN_model_"+dataset_name+".text", index = False, sep = "\t")
+    """
     ### experiments for baseline models.....................
     baseline_models = "baseline_models"
     validation_set = False
@@ -115,7 +115,7 @@ if __name__ == '__main__':
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
     recommender_class_list = [
-        Random,
+        
         TopPop,
         ItemKNNCFRecommender,
         UserKNNCFRecommender,

@@ -9,6 +9,7 @@ import os
 
 
 if __name__ == '__main__':
+    
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='amazonbook', help="amazonbook / gowalla / tmall")
     parser.add_argument('--epoch', type = int, default=300, help="amazonbook / gowalla / tmall")

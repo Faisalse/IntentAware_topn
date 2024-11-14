@@ -19,15 +19,12 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
     :param leave_random_out:
     :return:
     """
-    k_out = 2 
     use_validation_set = validation 
     URM = loaded_dataset.AVAILABLE_URM['URM_all']
     
     
     updated_test_data = update_item_ids_of_original_data(loaded_dataset.item_original_ID_to_index,loaded_dataset.user_original_ID_to_index, test_data_dictionary)
     
-
-    assert k_out > 0, "k_out must be a value greater than 0, provided was '{}'".format(k_out)
 
     URM = sps.csr_matrix(URM)
     n_users, n_items = URM.shape
@@ -97,14 +94,11 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
                 user_interaction_items_train = user_interaction_items[0:k_out]
                 user_interaction_data_train = user_interaction_data[0:k_out]
                 URM_validation_builder_train.add_data_lists([user_id]*len(user_interaction_items_train), user_interaction_items_train, user_interaction_data_train)
-
             else:
                 user_interaction_items_train = user_interaction_items
                 user_interaction_data_train = user_interaction_data
                 URM_validation_builder_train.add_data_lists([user_id]*len(user_interaction_items_train), user_interaction_items_train, user_interaction_data_train)
     
-
-
     URM_train = URM_train_builder.get_SparseMatrix()
     URM_test = URM_test_builder.get_SparseMatrix()
     
@@ -115,9 +109,8 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
     if user_no_item_train != 0:
         print("Warning: {} ({:.2f} %) of {} users have no Train items".format(user_no_item_train, user_no_item_train/n_users*100, n_users))
 
-
-
     if use_validation_set:
+        
         URM_validation_train = URM_validation_builder_train.get_SparseMatrix()
         URM_validation_test = URM_validation_builder_test.get_SparseMatrix()
 

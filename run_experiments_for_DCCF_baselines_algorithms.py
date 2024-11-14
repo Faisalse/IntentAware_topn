@@ -12,6 +12,7 @@ import pandas as pd
 import time
 import ast
 
+
 def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 
     if issubclass(recommender_class, BaseItemCBFRecommender):
@@ -23,7 +24,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="amazonbook / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='amazonbook', help="amazonbook / gowalla / tmall")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     saved_results = "/".join([commonFolderName, model] )
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
-    """
+    
     best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks)
     print("Start tuning by Best Epoch Value"+str(best_epoch))
     best_score = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = best_epoch , ks = args.Ks)
@@ -56,7 +57,8 @@ if __name__ == '__main__':
 
 
     df.to_csv(saved_results + "/"+args.dataset+"_DCCF.txt", index = False)
-    """
+
+
     ############### prepare baseline data ###############
     baseline_models = "baseline_models"
     validation_set = False
@@ -91,20 +93,6 @@ if __name__ == '__main__':
             recommender_object = _get_instance(recommender_class, URM_train, ICM_all, UCM_all)
             if isinstance(recommender_object, Incremental_Training_Early_Stopping):
                 fit_params = {"epochs": 15}
-            elif(dataset_name == "Music"):
-                if isinstance(recommender_object, RP3betaRecommender):
-                    fit_params = {"topK": 814, "alpha": 0.13435726416026783, "beta": 0.27678107504384436, "normalize_similarity": True}
-                else:
-                    fit_params = {}
-            elif(dataset_name == "Beauty"):
-                print("********************************")
-                if isinstance(recommender_object, P3alphaRecommender):
-                    fit_params = {"topK": 790, "alpha": 0.0, "normalize_similarity": False}
-                
-                elif isinstance(recommender_object, RP3betaRecommender):
-                    fit_params = {"topK": 1000, "alpha": 0.0, "beta": 0.0, "normalize_similarity": False}
-                else:
-                    fit_params = {}
             else:
                 fit_params = {}
             recommender_object.fit(**fit_params)

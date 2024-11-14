@@ -40,9 +40,9 @@ class BaseRecommender(object):
 
         self._cold_item_mask = np.ediff1d(self.URM_train.tocsc().indptr) == 0
 
-        if self._cold_item_mask.any():
-            self._print("URM Detected {} ({:4.1f}%) items with no interactions.".format(
-                self._cold_item_mask.sum(), self._cold_item_mask.sum()/self.n_items*100))
+        #if self._cold_item_mask.any():
+            #self._print("URM Detected {} ({:4.1f}%) items with no interactions.".format(
+                #self._cold_item_mask.sum(), self._cold_item_mask.sum()/self.n_items*100))
 
 
     def _get_cold_user_mask(self):
