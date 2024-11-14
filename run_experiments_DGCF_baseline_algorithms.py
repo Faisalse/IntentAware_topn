@@ -44,15 +44,16 @@ if __name__ == '__main__':
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
     recommender_class_list = [
-        Random,
+
         TopPop,
         ItemKNNCFRecommender,
         UserKNNCFRecommender,
         P3alphaRecommender,
-        RP3betaRecommender,
-        EASE_R_Recommender
+        RP3betaRecommender
+        #EASE_R_Recommender
+
         ]
-    evaluator = EvaluatorHoldout(URM_test, [5,10, 20], exclude_seen=True)
+    evaluator = EvaluatorHoldout(URM_test, [1, 5,10, 20, 50, 100], exclude_seen=True)
     logFile = open(output_root_path + "result_all_algorithms.txt", "a")
     for recommender_class in recommender_class_list:
         try:

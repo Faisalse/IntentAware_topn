@@ -28,9 +28,6 @@ class Movielens100MReaderGiven(DataReader):
     IS_IMPLICIT = False
     
     FILE_NAME = "movielens100k_longtail_data.pkl"
-    
-
-
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
     
@@ -39,42 +36,17 @@ class Movielens100MReaderGiven(DataReader):
         
 
         zipFile_path = data_path
-        
         try:
-            
             with open(zipFile_path, 'rb') as file:
                 data_dictionary = pickle.load(file)
-                
+    
                 train_data = data_dictionary["train_user_list"][1:]
                 test_data = data_dictionary["test_user_list"][1:]
-
-                """
-                total_unique_items = set()
-                for _item_set in train_data:
-                    if len(_item_set) == 0:
-                        continue
-            
-                    total_unique_items.update( _item_set   )
-
-                # remove all those items, which appears in training data, but do not in test...
-                test_dataNewFile = list()
-                for item_set in test_data:
-                    temp = set()
-                    for item_ in item_set:
-                        if item_ in total_unique_items:
-                            temp.update({item_})
-                    
-                    if(len(temp)) > 0:
-                        test_dataNewFile.append(temp)
-                    else:
-                        test_dataNewFile.append(temp)
-                #test_data  = test_dataNewFile 
-                """
 
                 user_features_dictionary = data_dictionary["user_all_feat_dict"]   
                 del user_features_dictionary[0]   
                 URM_dataframe, UCM_dataframe = self.convert_dictionary_to_dataFrame(train_data, test_data, user_features_dictionary)
-
+                
                 
         except FileNotFoundError:
             print(f"File not found: {zipFile_path}")
@@ -86,8 +58,8 @@ class Movielens100MReaderGiven(DataReader):
                                                           is_implicit=self.IS_IMPLICIT)
         
         if validation == True:
-            URM_train, URM_Validation, URM_test = split_train_test_validation(loaded_dataset, test_data, validation=validation)
-            return URM_train, URM_Validation, URM_test, loaded_dataset.AVAILABLE_UCM['UCM_all']
+            URM_train, URM_test, URM_validation_train, URM_validation_test = split_train_test_validation(loaded_dataset, test_data, validation=validation)
+            return URM_train, URM_test, URM_validation_train, URM_validation_test, loaded_dataset.AVAILABLE_UCM['UCM_all']
         else:
             URM_train, URM_test = split_train_test_validation(loaded_dataset,test_data,   validation=validation)
             return URM_train, URM_test, loaded_dataset.AVAILABLE_UCM['UCM_all']

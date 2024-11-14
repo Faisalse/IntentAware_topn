@@ -38,8 +38,8 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
     def _load_data_from_give_files(self, validation = False, data_name = "yelp2018"):
         
         zipFile_path = data_name
-        train_list = list()
-        test_list = list()
+        train_dictionary = dict()
+        test_dictionary = dict()
         try:
 
             with open(zipFile_path/ "train.txt") as f:
@@ -47,44 +47,43 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
                     if len(l) > 0:
                         l = l.strip('\n').split(' ')
                         items = [int(i) for i in l[1:]]
-                        train_list.append(set(items))
+                        train_dictionary[l[0]] = items
             
             with open(zipFile_path/"test.txt") as f:
                 for l in f.readlines():
                     if len(l) > 0:
                         l = l.strip('\n').split(' ')
-                        items = [i for i in l[1:]]
-                        test_list.append(set(items))
+                        try:
+                            items = [int(i) for i in l[1:]]
+                            test_dictionary[l[0]] = items
+                        except:
+                            pass
 
         except FileNotFoundError:
             print(f"File not found: {zipFile_path}")
-        URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_list, test_list)
+
+        URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_dictionary.copy(), test_dictionary.copy())
+
         dataset_manager = DatasetMapperManager()
         dataset_manager.add_URM(URM_dataframe, "URM_all")
         loaded_dataset = dataset_manager.generate_Dataset(dataset_name=self._get_dataset_name(),
                                                           is_implicit=self.IS_IMPLICIT)
-        
+
         if validation == True:
-            URM_train, URM_Validation, URM_test = split_train_test_validation(loaded_dataset, test_list, validation=validation)
-            return URM_train, URM_Validation, URM_test
+            URM_train, URM_test, URM_validation_train, URM_validation_test = split_train_test_validation(loaded_dataset, test_dictionary, validation=validation, validation_portion = validation_portion)
+            return URM_train, URM_test, URM_validation_train, URM_validation_test
         else:
-            URM_train, URM_test = split_train_test_validation(loaded_dataset, test_list,   validation=validation)
+            URM_train, URM_test = split_train_test_validation(loaded_dataset, test_dictionary,   validation=validation)
             return URM_train, URM_test
         
-    def convert_dictionary_to_dataframe_DGCF(self, train_list, test_list):
+    def convert_dictionary_to_dataframe_DGCF(self, train_dictionary, test_dictionary):
 
-        full_data = dict()
-        
-        for i in range(len(train_list)):
-            
-            temp = train_list[i]
-            temp.update(test_list[i])
-            full_data[i] = temp   
-        expanded_data = [(key, value) for key, values in full_data.items() for value in values]
+        for key, _ in test_dictionary.items():
+            train_dictionary[key]+=test_dictionary[key] 
+        expanded_data = [(key, value) for key, values in train_dictionary.items() for value in values]
         # Create DataFrame
         URM_dataframe = pd.DataFrame(expanded_data, columns=['UserID', 'ItemID'])
         URM_dataframe["Data"] = 1
-        
         URM_dataframe['UserID']= URM_dataframe['UserID'].astype(str)
         URM_dataframe['ItemID']= URM_dataframe['ItemID'].astype(str)
 

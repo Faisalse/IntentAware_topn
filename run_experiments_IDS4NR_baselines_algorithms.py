@@ -47,14 +47,15 @@ if __name__ == '__main__':
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
-
+    
     # Run experiments for IDS4NR
     obj1 = Run_experiments_for_IDSNR(model = args.model, dataset = data_path / datasetName)
     accuracy_measure = obj1.accuracy_values
     accuracy_measure.to_csv(output_root_path+args.dataset+"__"+args.model+".txt", index = False, sep = "\t")
-
+    
+    """
     recommender_class_list = [
-        Random,
+
         TopPop,
         ItemKNNCFRecommender,
         UserKNNCFRecommender,
@@ -62,6 +63,7 @@ if __name__ == '__main__':
         RP3betaRecommender,
         EASE_R_Recommender
         ]
+    
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)
     logFile = open(output_root_path + "result_all_algorithms.txt", "a")
     for recommender_class in recommender_class_list:
@@ -103,3 +105,4 @@ if __name__ == '__main__':
             traceback.print_exc()
             logFile.write("Algorithm: {} - Exception: {}\n".format(recommender_class, str(e)))
             logFile.flush()
+    """

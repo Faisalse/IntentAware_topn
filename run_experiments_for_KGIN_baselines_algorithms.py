@@ -20,7 +20,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='alibabaFashion', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -115,13 +115,13 @@ if __name__ == '__main__':
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
     recommender_class_list = [
-        
         TopPop,
         ItemKNNCFRecommender,
         UserKNNCFRecommender,
         P3alphaRecommender,
-        RP3betaRecommender,
-        EASE_R_Recommender
+        RP3betaRecommender
+        #EASE_R_Recommender
+
         ]
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)
     logFile = open(output_root_path + "result_all_algorithms.txt", "a")
