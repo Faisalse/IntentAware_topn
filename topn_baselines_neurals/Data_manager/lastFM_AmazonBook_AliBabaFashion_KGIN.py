@@ -26,30 +26,43 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
     
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
-    def _load_data_from_give_files(self, datapath, validation = False , validation_portion = 0.1):
-        
+    def _load_data_from_give_files(self, datapath, dataset = "lastFM", dataLeakage = False, validation = False , validation_portion = 0.1):
         
         zipFile_path = datapath
-        train_dictionary = dict()
-        test_dictionary = dict()
-        sum = 0
         try:
-            with open(zipFile_path / "train.txt") as f:
-                for l in f.readlines():
-                    if len(l) > 0:
-                        l = l.strip('\n').split(' ')
-                        items = [int(i) for i in l[1:]]
-                        train_dictionary[l[0]] = items
+            train_dictionary = self.read_cf(zipFile_path / "train.txt")
+            test_dictionary = self.read_cf(zipFile_path / "test.txt")
+            if dataset == "lastFm" and dataLeakage == True:
+                keys_with_dataLeakage = [key for key, item in train_dictionary.items() if len(test_dictionary[key].intersection(train_dictionary[key])) > 0]
+
+                keys_itemLisDataLeakage = dict()
+                for key in keys_with_dataLeakage:
+                    keys_itemLisDataLeakage[key] = train_dictionary[key].union(test_dictionary[key])
+                
+                keyToRemove  = [key for key, items in keys_itemLisDataLeakage.items() if len(items) < 2]
+                for key in keyToRemove:
+                    del keys_itemLisDataLeakage[key]
+
+                new_train, new_test = self.dataSplitingDataLeakage(keys_itemLisDataLeakage) 
+                ############
+                for key, _ in new_train.items():
+                    train_dictionary[key] = new_train[key]
+                    test_dictionary[key] = new_test[key]
+                
+                for key in keyToRemove:
+                    del train_dictionary[key]
+                    del test_dictionary[key]
+                train_dictionary_temp = train_dictionary.copy()
+                test_dictionary_temp = test_dictionary.copy()
+
+                for key, _ in train_dictionary_temp.items():
+                    train_dictionary[key] = list(train_dictionary_temp[key])
+                    test_dictionary[key] = list(test_dictionary_temp[key])
+                   
+                
+
+                
             
-            with open(zipFile_path / "test.txt") as f:
-                for l in f.readlines():
-                    if len(l) > 0:
-                        l = l.strip('\n').split(' ')
-                        try:
-                            items = [int(i) for i in l[1:]]
-                            test_dictionary[l[0]] = items
-                        except:
-                            pass
 
         except FileNotFoundError:
             print(f"File not found: {zipFile_path}")
@@ -78,8 +91,30 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
         URM_dataframe["Data"] = 1
         URM_dataframe['UserID']= URM_dataframe['UserID'].astype(str)
         URM_dataframe['ItemID']= URM_dataframe['ItemID'].astype(str)
-
         return URM_dataframe
+    
+    def read_cf(self,file_name):
+        temp_dictionary = dict()
+        lines = open(file_name, "r").readlines()
+        for l in lines:
+            tmps = l.strip()
+            inters = [int(i) for i in tmps.split(" ")]
+            u_id, pos_ids = inters[0], inters[1:]
+            temp_dictionary[u_id] = set(pos_ids)
+        return temp_dictionary
+    def dataSplitingDataLeakage(self,keys_itemLisDataLeakage):
+        new_train, new_test = dict(), dict()
+        for key, items in keys_itemLisDataLeakage.items():
+            temp_list = list(items)
+            if len(temp_list) < 5:
+                new_train[key] =  set(temp_list[:-1])
+                new_test[key] =   set([temp_list[-1]])
+            else:
+                selectedRatio = int(len(temp_list) * 0.2)
+                new_train[key] =  set(temp_list[:-selectedRatio])
+                new_test[key] =   set(temp_list[-selectedRatio:])
+        return new_train, new_test
+        
 
 
        

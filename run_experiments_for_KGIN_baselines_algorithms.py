@@ -20,7 +20,8 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--lastFMDataLeakage', type = bool, default=True, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -28,17 +29,8 @@ if __name__ == '__main__':
     task = "training"
     data_path = Path("data/KGIN/"+dataset_name)
     data_path = data_path.resolve()
-    # If directory does not exist, create
-    ############### prepare baseline data ###############
-    baseline_models = "baseline_models"
-    validation_set = False
-    dataset_object = lastFM_AmazonBook_AliBabaFashion_KGIN()
-    URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, validation=validation_set)
-    ICM_all = None
-    UCM_all = None
-    ################# end to prepare baseline data #################
+    
     start = time.time()
-    """
     if dataset_name == "lastFm":
         dim=64
         lr= 0.0001
@@ -52,7 +44,6 @@ if __name__ == '__main__':
         context_hops=3
         epoch = 60
     elif dataset_name == "alibabaFashion":
-    
         dim=64
         lr= 0.0001
         sim_regularity=0.0001
@@ -90,24 +81,23 @@ if __name__ == '__main__':
         mess_dropout_rate=0.1 
         gpu_id=0
         context_hops=3
+    
     result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
                                            node_dropout=node_dropout, node_dropout_rate=node_dropout_rate, mess_dropout=mess_dropout, 
                                            mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch)
-    
     result_path = Path()
     saved_results_dl = "/".join([commonFolderName,"KGIN", dataset_name] )
     if not os.path.exists(saved_results_dl):
         os.makedirs(saved_results_dl)
-    
     end = time.time()
     result_df["Time(seconds)"] = end - start
     result_df.to_csv(saved_results_dl+"KGIN_model_"+dataset_name+".text", index = False, sep = "\t")
-    """
+
     ### experiments for baseline models.....................
     baseline_models = "baseline_models"
     validation_set = False
     dataset_object = lastFM_AmazonBook_AliBabaFashion_KGIN()
-    URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, validation=validation_set)
+    URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, dataset = args.dataset, dataLeakage = args.lastFMDataLeakage, validation=validation_set)
     ICM_all = None
     UCM_all = None
     saved_results = "/".join([commonFolderName,"KGIN", baseline_models, dataset_name] )
@@ -119,8 +109,8 @@ if __name__ == '__main__':
         ItemKNNCFRecommender,
         UserKNNCFRecommender,
         P3alphaRecommender,
-        RP3betaRecommender
-        #EASE_R_Recommender
+        RP3betaRecommender,
+        EASE_R_Recommender
 
         ]
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)

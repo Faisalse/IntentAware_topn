@@ -29,7 +29,6 @@ def read_cf(file_name):
         pos_ids = list(set(pos_ids))
         for i_id in pos_ids:
             inter_mat.append([u_id, i_id])
-
     return np.array(inter_mat)
 
 
@@ -135,20 +134,84 @@ def build_sparse_relational_graph(relation_dict):
 
     return adj_mat_list, norm_mat_list, mean_mat_list
 
+def read_cf_avoid_dataLeakage(pathtrain, pathtest):
+    inter_mat = list()
+    train_dictionary = dict()
+    test_dictionary = dict()
+    lines = open(pathtrain, "r").readlines()
+    for l in lines:
+        tmps = l.strip()
+        inters = [int(i) for i in tmps.split(" ")]
+        u_id, pos_ids = inters[0], inters[1:]
+        train_dictionary[u_id] = set(pos_ids)
+    
+    lines = open(pathtest, "r").readlines()
+    for l in lines:
+        tmps = l.strip()
+        inters = [int(i) for i in tmps.split(" ")]
+        u_id, pos_ids = inters[0], inters[1:]
+        test_dictionary[u_id] = set(pos_ids)
+    keys_with_dataLeakage = [key for key, item in train_dictionary.items() if len(test_dictionary[key].intersection(train_dictionary[key])) > 0]
 
+    keys_itemLisDataLeakage = dict()
+    for key in keys_with_dataLeakage:
+        keys_itemLisDataLeakage[key] = train_dictionary[key].union(test_dictionary[key])
+    
+    keyToRemove  = [key for key, items in keys_itemLisDataLeakage.items() if len(items) < 2]
+    for key in keyToRemove:
+        del keys_itemLisDataLeakage[key]
+
+    new_train, new_test = dataSplitingDataLeakage(keys_itemLisDataLeakage) 
+    ############
+    for key, _ in new_train.items():
+        train_dictionary[key] = new_train[key]
+        test_dictionary[key] = new_test[key]
+
+    inter_mat_train = list()
+    for u_id, pos_ids in train_dictionary.items():
+        pos_ids = list(set(pos_ids))
+        for i_id in pos_ids:
+            inter_mat_train.append([u_id, i_id])
+    
+    inter_mat_test = list()
+    for u_id, pos_ids in test_dictionary.items():
+        pos_ids = list(set(pos_ids))
+        for i_id in pos_ids:
+            inter_mat_test.append([u_id, i_id])
+
+    return np.array(inter_mat_train), np.array(inter_mat_test), keyToRemove
+
+def dataSplitingDataLeakage(keys_itemLisDataLeakage):
+    new_train, new_test = dict(), dict()
+    for key, items in keys_itemLisDataLeakage.items():
+        temp_list = list(items)
+        if len(temp_list) < 5:
+           new_train[key] =  set(temp_list[:-1])
+           new_test[key] =   set([temp_list[-1]])
+        else:
+            selectedRatio = int(len(temp_list) * 0.2)
+            new_train[key] =  set(temp_list[:-selectedRatio])
+            new_test[key] =   set(temp_list[-selectedRatio:])
+    return new_train, new_test
+
+      
 def load_data(model_args, datapath):
     global args
     args = model_args
     directory = datapath
     
     print('reading train and test user-item set ...')
-    train_cf = read_cf(directory / 'train.txt')
-    test_cf = read_cf(directory / 'test.txt')
-    remap_item(train_cf, test_cf)
+    if True:
+        train_cf, test_cf, userWithDataLeakage = read_cf_avoid_dataLeakage(directory / 'train.txt', directory / 'test.txt')
+    else:
 
+        train_cf = read_cf(directory / 'train.txt')
+        test_cf = read_cf(directory / 'test.txt')
+
+    remap_item(train_cf, test_cf)
     print('combinating train_cf and kg data ...')
     triplets = read_triplets(directory / 'kg_final.txt')
-
+    
     print('building the graph ...')
     graph, relation_dict = build_graph(train_cf, triplets)
 
@@ -167,6 +230,5 @@ def load_data(model_args, datapath):
         'test_user_set': test_user_set
     }
 
-    return train_cf, test_cf, user_dict, n_params, graph, \
-           [adj_mat_list, norm_mat_list, mean_mat_list]
+    return train_cf, test_cf, user_dict, n_params, graph, [adj_mat_list, norm_mat_list, mean_mat_list], userWithDataLeakage
 

@@ -90,11 +90,10 @@ def run_experiments_KGIN_model(dataset, dim=64, lr= 0.0001, sim_regularity=0.000
     global args, device
 
     args = parse_args(dataset, dim, lr, sim_regularity, batch_size, node_dropout, node_dropout_rate, mess_dropout, mess_dropout_rate, gpu_id, context_hops, epoch)
-
     """read args"""
     device = torch.device("cuda:"+str(args.gpu_id)) if args.cuda else torch.device("cpu")
     """build dataset"""
-    train_cf, test_cf, user_dict, n_params, graph, mat_list = load_data(args, dataset)
+    train_cf, test_cf, user_dict, n_params, graph, mat_list, userWithDataLeakage = load_data(args, dataset)
     adj_mat_list, norm_mat_list, mean_mat_list = mat_list
 
     n_users = n_params['n_users']
@@ -127,23 +126,20 @@ def run_experiments_KGIN_model(dataset, dim=64, lr= 0.0001, sim_regularity=0.000
                                   s, s + args.batch_size,
                                   user_dict['train_user_set'], n_items)
             batch_loss, _, _, batch_cor = model(batch)
-         
+            
             batch_loss = batch_loss
             optimizer.zero_grad()
             batch_loss.backward()
             optimizer.step()
-        
             loss += batch_loss
             cor_loss += batch_cor
             s += args.batch_size
-    result_dict = model_evaluation(model, user_dict, n_params)
+    result_dict = model_evaluation(model, user_dict, n_params, userWithDataLeakage)
 
     result_df = pd.DataFrame()
     for key in result_dict:
             print(result_dict[key].getScore())
             result_df[key] = [result_dict[key].getScore()]
-    
-
     return result_df
 
 

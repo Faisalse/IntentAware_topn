@@ -111,7 +111,7 @@ def test_one_user(x):
     return get_performance(user_pos_test, r, auc, Ks)
 
 
-def model_evaluation(model, user_dict, n_params):
+def model_evaluation(model, user_dict, n_params, userWithDataLeakage):
     
     global n_users, n_items
     n_items = n_params['n_items']
@@ -141,8 +141,6 @@ def model_evaluation(model, user_dict, n_params):
         user_list_batch = test_users[start: end]
         user_batch = torch.LongTensor(np.array(user_list_batch)).to(device)
         u_g_embeddings = user_gcn_emb[user_batch]
-
-        
             # batch-item test
         n_item_batchs = n_items // i_batch_size + 1
         rate_batch = np.zeros(shape=(len(user_batch), n_items))
@@ -163,9 +161,11 @@ def model_evaluation(model, user_dict, n_params):
         assert i_count == n_items
         for i in range(len(user_list_batch)):
             user_id = user_list_batch[i]
-
-            user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
-            for key in Recall_:
-                Recall_[key].add(set(test_user_set[user_id]), user_item_score.copy())
+            if user_id in userWithDataLeakage:
+                pass
+            else:
+                user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
+                for key in Recall_:
+                    Recall_[key].add(set(test_user_set[user_id]), user_item_score.copy())
     pool.close()
     return Recall_
