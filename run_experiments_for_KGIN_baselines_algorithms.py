@@ -81,7 +81,7 @@ if __name__ == '__main__':
         mess_dropout_rate=0.1 
         gpu_id=0
         context_hops=3
-    
+    """
     result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
                                            node_dropout=node_dropout, node_dropout_rate=node_dropout_rate, mess_dropout=mess_dropout, 
                                            mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch)
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     end = time.time()
     result_df["Time(seconds)"] = end - start
     result_df.to_csv(saved_results_dl+"KGIN_model_"+dataset_name+".text", index = False, sep = "\t")
-
+    """
     ### experiments for baseline models.....................
     baseline_models = "baseline_models"
     validation_set = False
