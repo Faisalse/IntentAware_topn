@@ -12,13 +12,10 @@
 
 
 <h3>Introduction</h3>
-<p align="justify">This reproducibility package was prepared for the paper titled "Performance Comparison of Intent Aware and Non-Intent Aware Recommender Systems" and submitted to the ABC.  The results reported in this paper were achieved with the help of the codes, which were shared by the original authors of the selected articles. For the implementation of baseline models, we utilized the session-rec and RecSys2019_DeepLearning_Evaluation  frameworks. These frameworks include the state-of-the-art baseline models for session based and top-n recommender systems. More information about the session-rec and RecSys2019_DeepLearning_Evaluation frameworks can be found by following the given links. </p>
-<ul>
-  <li><a href="https://rn5l.github.io/session-rec/index.html" target="_blank">Session rec framework</a></li>
-  <li><a href="https://github.com/MaurizioFD/RecSys2019_DeepLearning_Evaluation.git" target="_blank"> RecSys2019_DeepLearning_Evaluation  framework </a></li>
-</ul>
-<h5>Reproduced articles</h5>
+<p align="justify">This reproducibility package was prepared for the paper titled "Are we really making much progress? An analysis of intent-aware recommendation models" and submitted to the SIGIR'25.  The results reported in this paper were achieved with the help of the codes, which were shared by the original authors of the selected articles. For the implementation of baseline models, we utilized the session-rec and RecSys2019_DeepLearning_Evaluation  frameworks. These frameworks include the state-of-the-art baseline models for session based and top-n recommender systems. More information about the  RecSys2019_DeepLearning_Evaluation frameworks can be found by following the provided <a href="https://rn5l.github.io/session-rec/index.html" target="_blank">link</a>. </p>
 
+
+<h5>Reproduced articles</h5>
 <ul>
 <li>Disentangled Graph Collaborative Filtering (SIGIR'20)</li>
 <li>Learning Intents behind Interactions with Knowledge Graph for Recommendation (WWW'21) </li>
