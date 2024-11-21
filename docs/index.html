@@ -149,20 +149,17 @@
 	<div class="abstract">
 
 		<p align="justify">
-		       In session-based recommendation settings, a recommender system has to base its suggestions on the user interactions that are 
-			observed in an ongoing session. Since such sessions can consist of only a small set of interactions, various approaches based on 
-			Graph Neural Networks (GNN) were recently proposed, as they allow us to integrate various types of side information about the items 
-			in a natural way. Unfortunately,  a variety of evaluation settings are used in the literature, e.g., in terms of protocols, metrics 
-			and baselines, making it difficult to assess what represents the state of the art.  In this work, we present the results of an  
-			evaluation of eight recent GNN-based approaches that were  published in high-quality outlets. <br>
-			For a fair comparison, all models are systematically tuned and tested under identical conditions using three common datasets. 
-			We furthermore include k-nearest-neighbor and sequential rules-based models as baselines, as such models have previously exhibited 
-			competitive performance results for similar settings. To our surprise, the evaluation showed that the simple models 
-			outperform <em>all</em> recent GNN models in terms of the Mean Reciprocal Rank, which we used as an optimization criterion, 
-			and were only outperformed in three cases in terms of the Hit Rate. Additional analyses furthermore reveal that several other 
-			factors that are often not deeply discussed in papers, e.g., random seeds, can markedly impact the performance of GNN-based models. 
-			Our results therefore <em>(a)</em>  point to continuing issues in the community in terms of research methodology and <em>(b)</em>  
-			indicate that there is ample room for improvement in session-based recommendation.
+			Lately, we have observed a growing interest in <em>intent-aware</em> recommender systems (IARS). 
+			The promise of such systems is that they are capable of generating better recommendations by 
+			predicting and considering the underlying motivations and short-term goals of consumers. 
+			From a technical perspective, various sophisticated neural models were recently proposed in this emerging and promising area. 
+			In the broader context of complex neural recommendation models, a growing number of research works unfortunately indicates that 
+			the true benefits of such models may be limited in reality, e.g., because the reported improvements were obtained through comparisons 
+			with untuned or weak baselines. In this work, we investigate if recent research in IARS is similarly affected by such problems. 
+			Specifically, we reproduced five contemporary IARS models that were published in top-level outlets, and we benchmarked them against a 
+			number of traditional non-neural recommendation models. Worryingly, we find that all examined IARS approaches are almost consistently 
+			outperformed by traditional models. These results point to enduring methodological issues in the field and to a pressing need for more 
+			rigorous scholarly practices.
 		</p>
 	</div>
 
