@@ -445,7 +445,7 @@ def run_experiments(data_path, args = None):
         n_batch = data_generator.n_train // args.batch_size + 1
         cor_batch_size = int(max(data_generator.n_users/n_batch, data_generator.n_items/n_batch))
 
-        for idx in range(n_batch): 
+        for idx in tqdm(range(n_batch)): 
             users, pos_items, neg_items = data_generator.sample()
             cor_users, cor_items = sample_cor_samples(data_generator.n_users, data_generator.n_items, cor_batch_size)
             _, batch_loss, batch_mf_loss, batch_emb_loss, batch_cor_loss = sess.run([model.opt, model.loss, 

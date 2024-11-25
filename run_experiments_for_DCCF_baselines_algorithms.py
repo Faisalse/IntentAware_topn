@@ -23,7 +23,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="amazonbook / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='amazonbook', help="amazonbook / gowalla / tmall")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     dataset_name = args.dataset
