@@ -74,7 +74,7 @@ if __name__ == '__main__':
           (URM_train.shape[0], URM_train.shape[1], non_zero_elements, density, np.sum(np.diff(URM_test.indptr) == 0)))
     
     result_path = Path()
-    saved_results = "/".join([commonFolderName,"DCCF", baseline_models, dataset_name] )
+    saved_results = "/".join([commonFolderName,"DCCF"] )
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
@@ -115,8 +115,7 @@ if __name__ == '__main__':
         RP3betaRecommender
         ]
     
-    
-    evaluator = EvaluatorHoldout(URM_test, [1, 5,10, 20, 50, 100], exclude_seen=True)
+    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
     for recommender_class in recommender_class_list:
         try:
             print("Algorithm: {}".format(recommender_class))

@@ -49,7 +49,7 @@ for key in result_dict:
 df.to_csv(saved_results+model+"_"+args.dataset+".txt")
 
 # python run_experiments_for_DGCF_algorithm.py --dataset yelp2018
-# python run_experiments_for_DGCF_algorithm.py --dataset gowalla
+# python run_experiments_for_DGCF_algorithm.py --dataset gowalla --batch_size 2000 --n_layers 1 --n_iterations 2 --corDecay 0.01 --n_factors 4 --show_step 3 --lr 0.001
 # python run_experiments_for_DGCF_algorithm.py --dataset amazonbook
 
  
