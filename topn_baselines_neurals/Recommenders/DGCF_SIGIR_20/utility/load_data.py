@@ -45,6 +45,7 @@ class Data(object):
                         continue
                     self.n_items = max(self.n_items, max(items))
                     self.n_test += len(items)
+                    
         self.n_items += 1
         self.n_users += 1
         self.print_statistics()
@@ -58,11 +59,9 @@ class Data(object):
                     l = l.strip('\n')
                     items = [int(i) for i in l.split(' ')]
                     uid, train_items = items[0], items[1:]
-
                     for i in train_items:
                         self.R[uid, i] = 1.
                         # self.R[uid][i] = 1
-
                     self.train_items[uid] = train_items
 
                 for l in f_test.readlines():

@@ -41,7 +41,7 @@ def run_experiments_for_IDSNR_Model():
     # If directory does not exist, create
     if not os.path.exists(saved_results):
         os.makedirs(saved_results+"/")
-    # model to optimize
+    # model to optimiz
     collaborative_algorithm_list = [
         P3alphaRecommender,
         RP3betaRecommender,

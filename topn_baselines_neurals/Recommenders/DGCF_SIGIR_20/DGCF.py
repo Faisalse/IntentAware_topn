@@ -420,9 +420,7 @@ def run_experiments(data_path, args = None):
     Generate the Laplacian matrix, where each entry defines the decay factor (e.g., p_ui) between two connected nodes.
     """
     plain_adj, norm_adj, mean_adj, pre_adj = data_generator.get_adj_mat()
-
     all_h_list, all_t_list, all_v_list = load_adjacency_list_data(plain_adj)
-
     A_values_init = create_initial_A_values(args.n_factors, all_v_list)
 
     config['norm_adj'] = plain_adj
@@ -433,25 +431,21 @@ def run_experiments(data_path, args = None):
     tf_config = tfv1.ConfigProto()
     tf_config.gpu_options.allow_growth = True
     sess = tfv1.Session(config=tf_config)
-
-
     sess.run(tfv1.global_variables_initializer())
-    
-
     
     """
     *********************************************************
     Model Training
     """
     from  tqdm import tqdm
-    for epoch in range(args.epoch):
+    for epoch in tqdm(range(args.epoch)):
 
         print(epoch)
         loss, mf_loss, emb_loss, cor_loss = 0., 0., 0., 0.
         n_batch = data_generator.n_train // args.batch_size + 1
         cor_batch_size = int(max(data_generator.n_users/n_batch, data_generator.n_items/n_batch))
 
-        for idx in tqdm(range(n_batch)): 
+        for idx in range(n_batch): 
             users, pos_items, neg_items = data_generator.sample()
             cor_users, cor_items = sample_cor_samples(data_generator.n_users, data_generator.n_items, cor_batch_size)
             _, batch_loss, batch_mf_loss, batch_emb_loss, batch_cor_loss = sess.run([model.opt, model.loss, 
@@ -466,8 +460,6 @@ def run_experiments(data_path, args = None):
             mf_loss += batch_mf_loss / n_batch
             emb_loss += batch_emb_loss / n_batch
             cor_loss += batch_cor_loss / n_batch
-    
-    
             
     users_to_test = list(data_generator.test_set.keys())
     result = model_testing(sess, model, users_to_test, test_data_dic = data_generator.test_set, ITEM_NUM= ITEM_NUM, BATCH_SIZE= batch_size)

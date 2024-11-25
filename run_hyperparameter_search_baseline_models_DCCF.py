@@ -58,7 +58,7 @@ def run_experiments_for_DCCF_Model():
             P3alphaRecommender,
             RP3betaRecommender,
             ItemKNNCFRecommender,
-            UserKNNCFRecommender
+            UserKNNCFRecommender,
         ]
 
     from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
