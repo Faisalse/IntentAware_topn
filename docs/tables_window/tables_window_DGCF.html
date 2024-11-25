@@ -1,12 +1,12 @@
 <ul class="nav nav-tabs" id="tables_tabs">
-		<li class="active"> <a href="#resultsRsc15" data-toggle="tab" aria-expanded="true">Amazon-Book</a> </li>
-		<li> <a href="#embeddingRsc15" data-toggle="tab" aria-expanded="true">Gowalla</a> </li>
-		<li> <a href="#seedsRsc15" data-toggle="tab" aria-expanded="true">Yelp'2018</a> </li>
+		<li class="active"> <a href="#resultsAmazon" data-toggle="tab" aria-expanded="true">Amazon-Book</a> </li>
+		<li> <a href="#resultsGowalla" data-toggle="tab" aria-expanded="true">Gowalla</a> </li>
+		<li> <a href="#resultsYelp" data-toggle="tab" aria-expanded="true">Yelp'2018</a> </li>
 </ul>
 
 <div class="tab-content">
 	
-	<div id="resultsRsc15" class="tab-pane fade active in">
+	<div id="resultsAmazon" class="tab-pane fade active in">
 	        <h3>Full Result Table for Amazon-Book</h3>
 		<p>You sort the results by clicking on the table headers.</p>
 		<br />
@@ -63,10 +63,123 @@
 	</div>
 
 
-	<div id="embeddingRsc15" class="tab-pane fade">
-     
-			
+	<div id="resultsGowalla" class="tab-pane fade">
+
+        <h3>Full Result Table for Gowalla</h3>
+		<p>You sort the results by clicking on the table headers.</p>
+		<br />
+		<table class="sortable-theme-minimal" data-sortable>
+	<thead>
+	<tr>
+        <th>Metrics</th>
+        <th>Recall@5</th>
+        <th>Recall@10</th>
+        <th><u>Recall@20</u></th>
+        <th>Recall@50</th>
+        <th>NDCG@5</th>
+        <th>NDCG@10</th>
+        <th>NDCG@20</th>
+        <th>NDCG@50</th>
+        <th>T-time (s)</th>
+        <th>P time (s)</th>
+    	</tr>
+	</thead>
+    <tbody>
+    <tr>
+        <td align = "center">STAN</td>
+        <td align = "center">0.257</td>
+        <td align = "center">0.277</td>
+        <td align = "center">0.290</td>
+        <td align = "center">0.296</td>
+        <td align = "center">0.355</td>
+        <td align = "center">0.445</td>
+        <td align = "center">0.538</td>
+        <td align = "center">0.613</td>
+        <td align = "center">0.161</td>
+        <td align = "center">0.058</td>
+        
+    </tr>
+
+    <tr>
+        <td align = "center">VSTAN</td>
+        <td align = "center">0.253</td>
+        <td align = "center">0.270</td>
+        <td align = "center">0.286</td>
+        <td align = "center">0.289</td>
+        <td align = "center">0.353</td>
+        <td align = "center">0.428</td>
+        <td align = "center">0.546</td>
+        <td align = "center">0.595</td>
+        <td align = "center">0.177</td>
+        <td align = "center">0.050</td>
+    
+    </tr>
+    
+    
+    </tbody>
+		</table>	
     </div>
+
+
+
+
+    <div id="resultsYelp" class="tab-pane fade">
+
+        <h3>Full Result Table for Yelp</h3>
+		<p>You sort the results by clicking on the table headers.</p>
+		<br />
+		<table class="sortable-theme-minimal" data-sortable>
+	<thead>
+	<tr>
+        <th>Metrics</th>
+        <th>Recall@5</th>
+        <th>Recall@10</th>
+        <th><u>Recall@20</u></th>
+        <th>Recall@50</th>
+        <th>NDCG@5</th>
+        <th>NDCG@10</th>
+        <th>NDCG@20</th>
+        <th>NDCG@50</th>
+        <th>T-time (s)</th>
+        <th>P time (s)</th>
+    	</tr>
+	</thead>
+    <tbody>
+    <tr>
+        <td align = "center">STAN</td>
+        <td align = "center">0.257</td>
+        <td align = "center">0.277</td>
+        <td align = "center">0.290</td>
+        <td align = "center">0.296</td>
+        <td align = "center">0.355</td>
+        <td align = "center">0.445</td>
+        <td align = "center">0.538</td>
+        <td align = "center">0.613</td>
+        <td align = "center">0.161</td>
+        <td align = "center">0.058</td>
+        
+    </tr>
+
+    <tr>
+        <td align = "center">VSTAN</td>
+        <td align = "center">0.253</td>
+        <td align = "center">0.270</td>
+        <td align = "center">0.286</td>
+        <td align = "center">0.289</td>
+        <td align = "center">0.353</td>
+        <td align = "center">0.428</td>
+        <td align = "center">0.546</td>
+        <td align = "center">0.595</td>
+        <td align = "center">0.177</td>
+        <td align = "center">0.050</td>
+    
+    </tr>
+    
+    
+    </tbody>
+		</table>	
+    </div>
+
 
 
 </div>
