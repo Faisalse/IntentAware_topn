@@ -9,7 +9,7 @@ Note that: This implementation is based on the codes of NGCF.
 
 import numpy as np
 import tensorflow as tf
-
+from  tqdm import tqdm
 
 #  import m
 from topn_baselines_neurals.Recommenders.DGCF_SIGIR_20.utility.accuracy_measures import *
@@ -29,7 +29,7 @@ def model_testing(sess, model, users_to_test, test_data_dic = None, ITEM_NUM = N
     n_test_users = len(users_to_test)
     n_user_batchs = n_test_users // u_batch_size + 1
     
-    for u_batch_id in range(n_user_batchs):
+    for u_batch_id in tqdm(range(n_user_batchs)):
         start = u_batch_id * u_batch_size
         end = (u_batch_id + 1) * u_batch_size
         user_batch = test_users[start: end]

@@ -18,7 +18,7 @@ import sys
 import random as rd
 import pickle
 import numpy as np
-
+from  tqdm import tqdm
 
 
 
@@ -437,7 +437,7 @@ def run_experiments(data_path, args = None):
     *********************************************************
     Model Training
     """
-    from  tqdm import tqdm
+    
     for epoch in tqdm(range(args.epoch)):
 
         print(epoch)
@@ -460,6 +460,7 @@ def run_experiments(data_path, args = None):
             mf_loss += batch_mf_loss / n_batch
             emb_loss += batch_emb_loss / n_batch
             cor_loss += batch_cor_loss / n_batch
+            
             
     users_to_test = list(data_generator.test_set.keys())
     result = model_testing(sess, model, users_to_test, test_data_dic = data_generator.test_set, ITEM_NUM= ITEM_NUM, BATCH_SIZE= batch_size)

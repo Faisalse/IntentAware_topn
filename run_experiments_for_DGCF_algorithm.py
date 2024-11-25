@@ -11,11 +11,11 @@ def parse_args():
     parser.add_argument('--proj_path', nargs='?', default='',help='Project path.')
     parser.add_argument('--pick', type=int, default=0,help='O for no pick, 1 for pick')
     parser.add_argument('--pick_scale', type=float, default=1e10,help='Scale')
-    parser.add_argument('--dataset', nargs='?', default="gowalla", help='Choose a dataset from {yelp2018, gowalla, amazonbook}')
+    parser.add_argument('--dataset', nargs='?', default="yelp2018", help='Choose a dataset from {yelp2018, gowalla, amazonbook}')
     parser.add_argument('--pretrain', type=int, default=0, help='0: No pretrain, 1:Use stored models.')
     parser.add_argument('--embed_name', nargs='?', default='', help='Name for pretrained model.')
     parser.add_argument('--verbose', type=int, default=1, help='Interval of evaluation.')
-    parser.add_argument('--epoch', type=int, default=1, help='Number of epochs')    # given 3000   
+    parser.add_argument('--epoch', type=int, default=1000, help='Number of epochs')    # given 3000   
     parser.add_argument('--embed_size', type=int, default=64, help='Embedding size.')
     parser.add_argument('--layer_size', nargs='?', default='[64]', help='Output sizes of every layer')
     parser.add_argument('--batch_size', type=int, default=1024, help='Batch size.')
