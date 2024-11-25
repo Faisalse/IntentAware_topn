@@ -24,14 +24,10 @@ class ItemKNNCBFRecommender(BaseItemCBFRecommender, BaseItemSimilarityMatrixReco
 
     def __init__(self, URM_train, ICM_train, verbose = True):
         super(ItemKNNCBFRecommender, self).__init__(URM_train, ICM_train, verbose = verbose)
-
-
-
     def fit(self, topK=1000, shrink=953, similarity='tversky', normalize=False, feature_weighting = "none", ICM_bias = None, **similarity_args):
 
         self.topK = topK
         self.shrink = shrink
-
         if feature_weighting not in self.FEATURE_WEIGHTING_VALUES:
             raise ValueError("Value for 'feature_weighting' not recognized. Acceptable values are {}, provided was '{}'".format(self.FEATURE_WEIGHTING_VALUES, feature_weighting))
 

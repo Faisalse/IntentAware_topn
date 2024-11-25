@@ -34,7 +34,7 @@ def parse_args():
     parser.add_argument('--test_flag', nargs='?', default='part', help='Specify the test type from {part, full}, indicating whether the reference is done in mini-batch')
     return parser.parse_args()
 
-args = parse_args()
+args = parse_args() 
 dataset_name  = args.dataset
 data_path = Path("data/DGCF/"+dataset_name)
 data_path = data_path.resolve()

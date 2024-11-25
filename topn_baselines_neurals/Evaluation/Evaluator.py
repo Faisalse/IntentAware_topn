@@ -226,11 +226,6 @@ class Evaluator(object):
 
         # Prune users with an insufficient number of ratings
         self.URM_test, users_to_evaluate_mask = _prune_users(URM_test, self.ignore_items_ID, min_ratings_per_user)
-
-        if not np.all(users_to_evaluate_mask):
-            self._print("Ignoring {} ({:4.1f}%) Users that have less than {} test interactions".format(len(users_to_evaluate_mask) - np.sum(users_to_evaluate_mask),
-                                                                                                     100*np.sum(np.logical_not(users_to_evaluate_mask))/len(users_to_evaluate_mask), min_ratings_per_user))
-
         self.users_to_evaluate = np.arange(self.n_users)[users_to_evaluate_mask]
 
         if ignore_users is not None:

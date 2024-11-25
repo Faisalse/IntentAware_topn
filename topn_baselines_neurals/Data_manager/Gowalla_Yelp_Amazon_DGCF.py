@@ -18,24 +18,21 @@ from topn_baselines_neurals.Data_manager.split_functions.DGCF_given_train_test_s
 
 class Gowalla_Yelp_Amazon_DGCF(DataReader):
 
-    DATASET_URL = "https://github.com/NLPWM-WHU/IDS4NR/blob/main/movielens_100k/movielens100k_longtail_data.pkl"
-    DATASET_SUBFOLDER = "Movielens100M_given/"
-    CONFERENCE_JOURNAL = "DGCF/"
+    DATASET_URL = ""
+    DATASET_SUBFOLDER = ""
+    CONFERENCE_JOURNAL = ""
     AVAILABLE_URM = ["URM_all"]
     AVAILABLE_ICM = ["ICM_genres"]
     AVAILABLE_UCM = ["UCM_all"]
     
     IS_IMPLICIT = False
-    
     FILE_NAME = "movielens100k_longtail_data.pkl"
     
 
 
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
-    
-    
-    def _load_data_from_give_files(self, validation = False, data_name = "yelp2018"):
+    def _load_data_from_give_files(self, validation = False, data_name = "yelp2018", validation_portion = 0.1):
         
         zipFile_path = data_name
         train_dictionary = dict()
@@ -61,9 +58,8 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
 
         except FileNotFoundError:
             print(f"File not found: {zipFile_path}")
-
+        self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
         URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_dictionary.copy(), test_dictionary.copy())
-
         dataset_manager = DatasetMapperManager()
         dataset_manager.add_URM(URM_dataframe, "URM_all")
         loaded_dataset = dataset_manager.generate_Dataset(dataset_name=self._get_dataset_name(),
@@ -88,6 +84,16 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
         URM_dataframe['ItemID']= URM_dataframe['ItemID'].astype(str)
 
         return URM_dataframe
+    
+    def checkLeakage(self, train_dictionary, test_dictionary):
+        checkLeakage = len([key for key, item in test_dictionary.items() if (len(set(item).intersection(train_dictionary[key])) > 0)])
+        if (checkLeakage == 0):
+            print("We do not observe data leakage issue")
+        else:
+            print("Total users: %d, Users with data leakage: %d", (len(train_dictionary), checkLeakage))
+        
+
+
 
 
        

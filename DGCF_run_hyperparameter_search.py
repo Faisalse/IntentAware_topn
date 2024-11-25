@@ -23,7 +23,7 @@ def run_experiments_for_IDSNR_Model():
         - A _best_result_test file which contains a dictionary with the results, on the test set, of the best solution chosen using the validation set
     """
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="yelp2018, gowalla, amazonbook")
+    parser.add_argument('--dataset', type = str, default='yelp2018', help="yelp2018, gowalla, amazonbook")
 
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -33,37 +33,34 @@ def run_experiments_for_IDSNR_Model():
     commonFolderName = "results"
     data_path = Path("data/DGCF/")
     data_path = data_path.resolve()
-    validation_set = False
-    
+    validation_portion  = 0.2
     validation_set = True
     dataset_object = Gowalla_Yelp_Amazon_DGCF()
-    URM_train,URM_validation, URM_test = dataset_object._load_data_from_give_files(validation=validation_set, data_name = data_path / dataset_name)
+    URM_train, URM_test, URM_validation_train, URM_validation_test = dataset_object._load_data_from_give_files(validation=validation_set, data_name = data_path / dataset_name, validation_portion = validation_portion)
     saved_results = "/".join([commonFolderName,model,args.dataset, task] )
     # If directory does not exist, create
     if not os.path.exists(saved_results):
         os.makedirs(saved_results+"/")
     # model to optimize
     collaborative_algorithm_list = [
-    
-        P3alphaRecommender
-        #RP3betaRecommender
-        #ItemKNNCFRecommender
-        #UserKNNCFRecommender
-        #EASE_R_Recommender
-
+        P3alphaRecommender,
+        RP3betaRecommender,
+        ItemKNNCFRecommender,
+        UserKNNCFRecommender,
+        EASE_R_Recommender
     ]
     from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
     cutoff_list = [20]
     metric_to_optimize = "RECALL"
     cutoff_to_optimize = 20
+    n_cases = 100
+    n_random_starts = 10
 
-    n_cases = 10
-    n_random_starts = 5
-
-    evaluator_validation = EvaluatorHoldout(URM_validation, cutoff_list = cutoff_list)
+    evaluator_validation = EvaluatorHoldout(URM_validation_test, cutoff_list = cutoff_list)
     evaluator_test = EvaluatorHoldout(URM_test, cutoff_list = cutoff_list)
     runParameterSearch_Collaborative_partial = partial(runHyperparameterSearch_Collaborative,
-                                                       URM_train = URM_train,
+                                                       URM_train = URM_validation_train,
+                                                       URM_train_last_test = URM_train,
                                                        metric_to_optimize = metric_to_optimize,
                                                        cutoff_to_optimize = cutoff_to_optimize,
                                                        n_cases = n_cases,
@@ -73,8 +70,9 @@ def run_experiments_for_IDSNR_Model():
                                                        evaluator_test = evaluator_test,
                                                        output_folder_path = saved_results,
                                                        resume_from_saved = True,
-                                                       similarity_type_list = ["cosine"],
-                                                       parallelizeKNN = False)
+                                                       parallelizeKNN = False, allow_weighting = True,
+                                                       similarity_type_list = ['cosine', 'jaccard', "asymmetric", "dice", "tversky"]
+                                                       )
 
 
     pool = multiprocessing.Pool(processes=int(multiprocessing.cpu_count()), maxtasksperchild=1)

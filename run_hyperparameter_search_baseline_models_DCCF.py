@@ -24,7 +24,7 @@ def run_experiments_for_DCCF_Model():
         - A _best_result_test file which contains a dictionary with the results, on the test set, of the best solution chosen using the validation set
     """
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="yelp2018, gowalla, amazonbook")
+    parser.add_argument('--dataset', type = str, default='tmall', help="amazonbook / gowalla / tmall")
 
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -40,29 +40,33 @@ def run_experiments_for_DCCF_Model():
     saved_results = "/".join([commonFolderName,model,dataset_name, task] )
     print("Totla number of users:  "+str(URM_train.shape[0]))
     print("Totla number of items:  "+str(URM_train.shape[1]))
-    print("Number of users in the training data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_train)))
-    print("Number of users in the test data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_test)))
-    print("Number of users in the train validation data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_validation_train)))
-    print("Number of users in the test validation data without any interactions:  "+str(numberOfUsersWithNoEntries(URM_validation_test)))
-    
-
+     
     # If directory does not exist, create
     if not os.path.exists(saved_results):
         os.makedirs(saved_results+"/")
     # model to optimize
-    collaborative_algorithm_list = [
-        P3alphaRecommender,
-        RP3betaRecommender,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender,
-        EASE_R_Recommender
-    ]
+    if args.dataset == "gowalla" or args.dataset == "tmall":
+        collaborative_algorithm_list = [
+            P3alphaRecommender,
+            RP3betaRecommender,
+            ItemKNNCFRecommender,
+            UserKNNCFRecommender,
+            EASE_R_Recommender
+        ]
+    else:
+        collaborative_algorithm_list = [
+            P3alphaRecommender,
+            RP3betaRecommender,
+            ItemKNNCFRecommender,
+            UserKNNCFRecommender
+        ]
+
     from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
     cutoff_list = [20]
     metric_to_optimize = "RECALL"
     cutoff_to_optimize = 20
 
-    n_cases = 35
+    n_cases = 100
     n_random_starts = 5
 
     evaluator_validation = EvaluatorHoldout(URM_validation_test, cutoff_list = cutoff_list)
@@ -79,8 +83,9 @@ def run_experiments_for_DCCF_Model():
                                                        evaluator_test = evaluator_test,
                                                        output_folder_path = saved_results,
                                                        resume_from_saved = True,
-                                                       similarity_type_list = ["cosine"],
-                                                       parallelizeKNN = False, allow_weighting = True)
+                                                       parallelizeKNN = False, allow_weighting = True,
+                                                       similarity_type_list = ['cosine', 'jaccard', "asymmetric", "dice", "tversky"]
+                                                       )
 
 
     pool = multiprocessing.Pool(processes=int(multiprocessing.cpu_count()), maxtasksperchild=1)

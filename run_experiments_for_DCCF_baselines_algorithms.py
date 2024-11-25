@@ -38,6 +38,7 @@ if __name__ == '__main__':
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
     
+    """
     best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks)
     print("Start tuning by Best Epoch Value"+str(best_epoch))
     best_score = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = best_epoch , ks = args.Ks)
@@ -54,10 +55,8 @@ if __name__ == '__main__':
                 df[key+"@"+str(normal_list[i])] = [best_score[key][i]]
                 print(key+"@"+str(normal_list[i]) +":"+str(best_score[key][i]))
     df["Time(seconds)"] = [end - start]
-
-
     df.to_csv(saved_results + "/"+args.dataset+"_DCCF.txt", index = False)
-
+    """
 
     ############### prepare baseline data ###############
     baseline_models = "baseline_models"
@@ -66,13 +65,18 @@ if __name__ == '__main__':
     URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, validation=validation_set)
     ICM_all = None
     UCM_all = None
+
+    total_elements = URM_train.shape[0] * URM_train.shape[1]
+    non_zero_elements = URM_train.nnz
+    # Sparsity calculation
+    density = non_zero_elements / total_elements
+    
+    print("Number of users: %s, Items: %d, Interactions: %d, Density %.5f, Number of users with no test items: %d." % 
+          (URM_train.shape[0], URM_train.shape[1], non_zero_elements, density, np.sum(np.diff(URM_test.indptr) == 0)))
+    
+
     
     result_path = Path()
-    ### experiments for baseline models.....................
-    baseline_models = "baseline_models"
-    validation_set = False
-    ICM_all = None
-    UCM_all = None
     saved_results = "/".join([commonFolderName,"DCCF", baseline_models, dataset_name] )
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)

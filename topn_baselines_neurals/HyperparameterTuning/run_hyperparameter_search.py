@@ -107,7 +107,8 @@ def runHyperparameterSearch_Collaborative(recommender_class, URM_train, URM_trai
                                           evaluator_validation = None, evaluator_test = None, evaluator_validation_earlystopping = None,
                                           metric_to_optimize = None, cutoff_to_optimize = None,
                                           output_folder_path ="result_experiments/", parallelizeKNN = True,
-                                          allow_weighting = True, allow_bias_URM=False, allow_dropout_MF = False, similarity_type_list = None):
+                                          allow_weighting = False, allow_bias_URM=False, allow_dropout_MF = False, similarity_type_list = None):
+    
     """
     This function performs the hyperparameter optimization for a collaborative recommender
 
@@ -392,13 +393,6 @@ def read_data_split_and_search():
                                                        evaluator_test = evaluator_test,
                                                        output_folder_path = output_folder_path)
 
-    # pool = PoolWithSubprocess(processes=int(multiprocessing.cpu_count()), maxtasksperchild=1)
-    # resultList = pool.map(runParameterSearch_Collaborative_partial, collaborative_algorithm_list)
-    # pool.close()
-    # pool.join()
-
-
-
     for recommender_class in collaborative_algorithm_list:
 
         try:
@@ -411,13 +405,5 @@ def read_data_split_and_search():
             traceback.print_exc()
 
 
-
-
-
-
-
-
 if __name__ == '__main__':
-
-
     read_data_split_and_search()
