@@ -111,7 +111,7 @@ def test_one_user(x):
     return get_performance(user_pos_test, r, auc, Ks)
 
 
-def model_evaluation(model, user_dict, n_params, userWithDataLeakage):
+def model_evaluation(model, user_dict, n_params, userWithDataLeakage, lastFMDataLeakage):
     
     global n_users, n_items
     n_items = n_params['n_items']
@@ -161,11 +161,19 @@ def model_evaluation(model, user_dict, n_params, userWithDataLeakage):
         assert i_count == n_items
         for i in range(len(user_list_batch)):
             user_id = user_list_batch[i]
-            if user_id in userWithDataLeakage:
-                pass
+            ### do not perform testing for users with data leakage.......
+            if lastFMDataLeakage:
+                if user_id in userWithDataLeakage:
+                    pass
+                else:
+                    user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
+                    for key in Recall_:
+                        Recall_[key].add(set(test_user_set[user_id]), user_item_score.copy())
+            
             else:
                 user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
                 for key in Recall_:
                     Recall_[key].add(set(test_user_set[user_id]), user_item_score.copy())
+
     pool.close()
     return Recall_

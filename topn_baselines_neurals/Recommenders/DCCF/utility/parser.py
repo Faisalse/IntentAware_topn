@@ -23,5 +23,4 @@ def parse_args():
     parser.add_argument('--show_step', type=int, default=1, help='Test every show_step epochs.')
     parser.add_argument('--patience', type=int, default=20, help='Patience')
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
-
     return parser.parse_args()

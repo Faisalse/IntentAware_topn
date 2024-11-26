@@ -21,9 +21,8 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 if __name__ == '__main__':
     commonFolderName = "experiments_results"
     model = "DGCF"
-    dataset_name = "gowalla" # yelp2018, gowalla, amazonbook
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='yelp2018', help="yelp2018, gowalla, amazonbook")
+    parser.add_argument('--dataset', type = str, default='gowalla', help="yelp2018, gowalla, amazonbook")
 
     args = parser.parse_args()
     dataset_name = args.dataset

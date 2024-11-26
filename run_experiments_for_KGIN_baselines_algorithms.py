@@ -21,14 +21,18 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
-    parser.add_argument('--lastFMDataLeakage', type = bool, default=True, help="False / True")
+    parser.add_argument('--lastFMDataLeakage', type = bool, default=False, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
-    commonFolderName = "results"
-    task = "training"
     data_path = Path("data/KGIN/"+dataset_name)
     data_path = data_path.resolve()
+   
+    commonFolderName = "results"
+    model = "KGIN"
+    saved_results = "/".join([commonFolderName, model] )
+    if not os.path.exists(saved_results):
+        os.makedirs(saved_results)
     
     start = time.time()
     if dataset_name == "lastFm":
@@ -42,7 +46,7 @@ if __name__ == '__main__':
         mess_dropout_rate=0.1 
         gpu_id=0
         context_hops=3
-        epoch = 60
+        epoch = 509 #### epoch value is taken from the provided training logs.....
     elif dataset_name == "alibabaFashion":
         dim=64
         lr= 0.0001
@@ -54,7 +58,7 @@ if __name__ == '__main__':
         mess_dropout_rate=0.1 
         gpu_id=0
         context_hops= 3
-        epoch = 60
+        epoch = 209 #epoch value is taken from the provided training logs.....
 
     elif dataset_name == "amazonBook":
         dataset= data_path
@@ -68,9 +72,9 @@ if __name__ == '__main__':
         mess_dropout_rate=0.1 
         gpu_id=0
         context_hops=3
-        epoch = 200
+        epoch = 579 # epoch value is taken from the provided training logs.....
     else:
-        print("If you do not mention HPs values then it will default HP values of lastFm dataset")
+        print("If you do not mention HPs values then it will be default HP values of lastFm dataset")
         dim=64,
         lr = 0.0001
         sim_regularity=0.0001
@@ -81,29 +85,26 @@ if __name__ == '__main__':
         mess_dropout_rate=0.1 
         gpu_id=0
         context_hops=3
-    """
-    result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
-                                           node_dropout=node_dropout, node_dropout_rate=node_dropout_rate, mess_dropout=mess_dropout, 
-                                           mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch)
-    result_path = Path()
-    saved_results_dl = "/".join([commonFolderName,"KGIN", dataset_name] )
-    if not os.path.exists(saved_results_dl):
-        os.makedirs(saved_results_dl)
-    end = time.time()
-    result_df["Time(seconds)"] = end - start
-    result_df.to_csv(saved_results_dl+"KGIN_model_"+dataset_name+".text", index = False, sep = "\t")
-    """
-    ### experiments for baseline models.....................
-    baseline_models = "baseline_models"
+    
+    ############### BASELINE MODELS DATA PREPARATION ###############
     validation_set = False
     dataset_object = lastFM_AmazonBook_AliBabaFashion_KGIN()
     URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, dataset = args.dataset, dataLeakage = args.lastFMDataLeakage, validation=validation_set)
     ICM_all = None
     UCM_all = None
-    saved_results = "/".join([commonFolderName,"KGIN", baseline_models, dataset_name] )
-    if not os.path.exists(saved_results):
-        os.makedirs(saved_results)
-    output_root_path = saved_results+"/"
+    ############### END #############################################
+
+    
+     ############### RUN EXPERIMENT KGIN MODEL ###############
+    result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
+                                           node_dropout=node_dropout, node_dropout_rate=node_dropout_rate, mess_dropout=mess_dropout, 
+                                           mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch, lastFMDataLeakage = args.lastFMDataLeakage, datasetName = args.dataset)
+    
+    result_df.to_csv(saved_results+"/"+"KGIN_"+dataset_name+".text", index = False, sep = "\t")
+    
+    
+
+    ############### RUN EXPERIMENTS FOR BASELINE MODELS ###############
     recommender_class_list = [
         TopPop,
         ItemKNNCFRecommender,
@@ -111,49 +112,79 @@ if __name__ == '__main__':
         P3alphaRecommender,
         RP3betaRecommender,
         EASE_R_Recommender
-
         ]
-    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)
-    logFile = open(output_root_path + "result_all_algorithms.txt", "a")
+
+    if args.dataset == "alibabaFashion": # get optimal values.........
+        itemkNN_best_HP  = {"topK": 508, "similarity": "cosine"}
+        userkNN_best_HP  = {"topK": 146, "similarity": "cosine"}
+        RP3alpha_best_HP = {"topK": 777, "alpha": 1.087096950563704, "normalize_similarity": False}
+        RP3beta_best_HP  = {"topK": 777, "alpha": 0.5663562161452378, "beta": 0.001085447926739258, "normalize_similarity": True}
+        
+    elif args.dataset == "lastFm":  # get optimal values.........
+        itemkNN_best_HP = {"topK": 144, "similarity": "cosine"}
+        userkNN_best_HP = {"topK": 83, "similarity": "tversky", "shrink": 258, "normalize": True}
+        RP3alpha_best_HP = {"topK": 496, "alpha": 0.7681732734954694, "normalize_similarity": False}
+        RP3beta_best_HP = {"topK": 350, "alpha": 0.7681732734954694, "beta": 0.4181395996963926, "normalize_similarity": True}
+        
+    
+    elif args.dataset == "amazonbook":
+        itemkNN_best_HP = {"topK": 125, "similarity": "cosine"}
+        userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
+        RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
+        RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
+
+        recommender_class_list = [
+        Random,
+        TopPop,
+        ItemKNNCFRecommender,
+        UserKNNCFRecommender,
+        P3alphaRecommender,
+        RP3betaRecommender
+        ]
+    
+    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
     for recommender_class in recommender_class_list:
         try:
             print("Algorithm: {}".format(recommender_class))
             recommender_object = _get_instance(recommender_class, URM_train, ICM_all, UCM_all)
             if isinstance(recommender_object, Incremental_Training_Early_Stopping):
                 fit_params = {"epochs": 15}
-            elif(dataset_name == "Music"):
-                if isinstance(recommender_object, RP3betaRecommender):
-                    fit_params = {"topK": 814, "alpha": 0.13435726416026783, "beta": 0.27678107504384436, "normalize_similarity": True}
-                else:
-                    fit_params = {}
-            elif(dataset_name == "Beauty"):
-                print("********************************")
-                if isinstance(recommender_object, P3alphaRecommender):
-                    fit_params = {"topK": 790, "alpha": 0.0, "normalize_similarity": False}
-                
-                elif isinstance(recommender_object, RP3betaRecommender):
-                    fit_params = {"topK": 1000, "alpha": 0.0, "beta": 0.0, "normalize_similarity": False}
-                else:
-                    fit_params = {}
-            else:
+
+            if isinstance(recommender_object, ItemKNNCFRecommender):
+                fit_params = {"topK": itemkNN_best_HP["topK"], "similarity": itemkNN_best_HP["similarity"]}
+
+            elif isinstance(recommender_object, UserKNNCFRecommender):
+                fit_params = {"topK": userkNN_best_HP["topK"], "shrink": userkNN_best_HP["shrink"],  "similarity": userkNN_best_HP["similarity"] , "normalize": userkNN_best_HP["normalize"] }
+
+            elif isinstance(recommender_object, P3alphaRecommender):
+                fit_params = {"topK": RP3alpha_best_HP["topK"], "alpha": RP3alpha_best_HP["alpha"], "normalize_similarity": RP3alpha_best_HP["normalize_similarity"]}
+            
+            elif isinstance(recommender_object, RP3betaRecommender):
+                fit_params = {"topK": RP3beta_best_HP["topK"], "alpha": RP3beta_best_HP["alpha"], "beta": RP3beta_best_HP["beta"], "normalize_similarity": RP3beta_best_HP["normalize_similarity"]}
+            else: # get defaut parameters...........
                 fit_params = {}
+            # measure training time.....
+            start = time.time()
             recommender_object.fit(**fit_params)
+            training_time = time.time() - start
+
+            # testing for all records.....
+            start = time.time()
             results_run_1, results_run_string_1 = evaluator.evaluateRecommender(recommender_object)
-            recommender_object.save_model(output_root_path, file_name = "temp_model.zip")
-            recommender_object = _get_instance(recommender_class, URM_train, ICM_all, UCM_all)
-            recommender_object.load_model(output_root_path, file_name = "temp_model.zip")
-            os.remove(output_root_path + "temp_model.zip")
-            results_run_2, results_run_string_2 = evaluator.evaluateRecommender(recommender_object)
-            if recommender_class not in [Random]:
-                assert results_run_1.equals(results_run_2)
+            testing_time = time.time() - start
+            averageTestingForOneRecord = testing_time / len(URM_test.getnnz(axis=1) > 0) # get number of non-zero rows in test data
+            
+            results_run_1["TrainingTime(s)"] = [training_time] + [0 for i in range(results_run_1.shape[0] - 1)]
+            results_run_1["TestingTimeforRecords(s)"] = [testing_time] + [0 for i in range(results_run_1.shape[0] - 1)]
+            results_run_1["AverageTestingTimeForOneRecord(s)"] = [averageTestingForOneRecord] + [0 for i in range(results_run_1.shape[0] - 1)]
+
             print("Algorithm: {}, results: \n{}".format(recommender_class, results_run_string_1))
-            logFile.write("Algorithm: {}, results: \n{}\n".format(recommender_class, results_run_string_1))
-            logFile.flush()
+            
+            results_run_1["cuttOff"] = results_run_1.index
+            results_run_1.insert(0, 'cuttOff', results_run_1.pop('cuttOff'))
+            results_run_1.to_csv(saved_results+"/"+args.dataset+"_"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
         except Exception as e:
             traceback.print_exc()
-            logFile.write("Algorithm: {} - Exception: {}\n".format(recommender_class, str(e)))
-            logFile.flush()
-
     
     
 

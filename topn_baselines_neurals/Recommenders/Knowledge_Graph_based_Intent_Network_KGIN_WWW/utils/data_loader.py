@@ -195,13 +195,13 @@ def dataSplitingDataLeakage(keys_itemLisDataLeakage):
     return new_train, new_test
 
       
-def load_data(model_args, datapath):
+def load_data(model_args, datapath, lastFMDataLeakage, datasetName):
     global args
     args = model_args
     directory = datapath
-    
+    userWithDataLeakage = None
     print('reading train and test user-item set ...')
-    if True:
+    if lastFMDataLeakage == True and datasetName == "lastFm":
         train_cf, test_cf, userWithDataLeakage = read_cf_avoid_dataLeakage(directory / 'train.txt', directory / 'test.txt')
     else:
 
@@ -225,10 +225,12 @@ def load_data(model_args, datapath):
         'n_nodes': int(n_nodes),
         'n_relations': int(n_relations)
     }
+
     user_dict = {
         'train_user_set': train_user_set,
         'test_user_set': test_user_set
     }
-
+    
     return train_cf, test_cf, user_dict, n_params, graph, [adj_mat_list, norm_mat_list, mean_mat_list], userWithDataLeakage
+    
 

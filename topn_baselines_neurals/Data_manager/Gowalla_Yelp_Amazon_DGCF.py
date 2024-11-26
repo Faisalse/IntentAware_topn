@@ -55,11 +55,12 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
                             test_dictionary[l[0]] = items
                         except:
                             pass
-
         except FileNotFoundError:
             print(f"File not found: {zipFile_path}")
         self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
         URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_dictionary.copy(), test_dictionary.copy())
+        self.count_interactions_per_user_item(URM_dataframe)
+
         dataset_manager = DatasetMapperManager()
         dataset_manager.add_URM(URM_dataframe, "URM_all")
         loaded_dataset = dataset_manager.generate_Dataset(dataset_name=self._get_dataset_name(),
@@ -91,6 +92,18 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
             print("We do not observe data leakage issue")
         else:
             print("Total users: %d, Users with data leakage: %d", (len(train_dictionary), checkLeakage))
+
+    def count_interactions_per_user_item(self, df):
+        user_interaction = df.groupby("UserID")["ItemID"].count()
+        item_interaction = df.groupby("ItemID")["UserID"].count()
+        if user_interaction.empty:
+            print("No interactions found for users.")
+        else:
+            print("Interactions per user --> Minimum: %d Maximum: %d" % (min(user_interaction), max(user_interaction)))
+        if item_interaction.empty:
+            print("No interactions found for items.")
+        else:
+            print("Interactions per item --> Minimum: %d Maximum: %d" % (min(item_interaction), max(item_interaction)))
         
 
 

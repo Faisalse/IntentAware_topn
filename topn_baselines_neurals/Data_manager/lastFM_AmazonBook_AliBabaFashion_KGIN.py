@@ -16,13 +16,13 @@ from topn_baselines_neurals.Data_manager.split_functions.KGIN_given_train_test_s
 
 class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
 
-    DATASET_URL = "https://github.com/NLPWM-WHU/IDS4NR/blob/main/movielens_100k/movielens100k_longtail_data.pkl"
-    DATASET_SUBFOLDER = "Movielens100M_given/"
-    CONFERENCE_JOURNAL = "KGIN/"
+    DATASET_URL = ""
+    DATASET_SUBFOLDER = ""
+    CONFERENCE_JOURNAL = ""
     AVAILABLE_URM = ["URM_all"]
     AVAILABLE_ICM = ["ICM_genres"]
     AVAILABLE_UCM = ["UCM_all"]
-    IS_IMPLICIT = False
+    IS_IMPLICIT = True
     
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
@@ -32,6 +32,7 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
         try:
             train_dictionary = self.read_cf(zipFile_path / "train.txt")
             test_dictionary = self.read_cf(zipFile_path / "test.txt")
+            self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
             if dataset == "lastFm" and dataLeakage == True:
                 keys_with_dataLeakage = [key for key, item in train_dictionary.items() if len(test_dictionary[key].intersection(train_dictionary[key])) > 0]
 
@@ -58,16 +59,19 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
                 for key, _ in train_dictionary_temp.items():
                     train_dictionary[key] = list(train_dictionary_temp[key])
                     test_dictionary[key] = list(test_dictionary_temp[key])
+            else:
+
+                train_dictionary = self.conversion_set_list(train_dictionary)
+                test_dictionary = self.conversion_set_list(test_dictionary)
+
+
+
                    
-                
-
-                
-            
-
         except FileNotFoundError:
             print(f"File not found: {zipFile_path}")
-
+        
         URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_dictionary.copy(), test_dictionary.copy())
+        self.count_interactions_per_user_item(URM_dataframe)
 
         dataset_manager = DatasetMapperManager()
         dataset_manager.add_URM(URM_dataframe, "URM_all")
@@ -82,9 +86,12 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
             return URM_train, URM_test
         
     def convert_dictionary_to_dataframe_DGCF(self, train_dictionary, test_dictionary):
-
+        
+        main_dictionary = dict()
         for key, _ in test_dictionary.items():
             train_dictionary[key]+=test_dictionary[key] 
+
+
         expanded_data = [(key, value) for key, values in train_dictionary.items() for value in values]
         # Create DataFrame
         URM_dataframe = pd.DataFrame(expanded_data, columns=['UserID', 'ItemID'])
@@ -102,6 +109,7 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
             u_id, pos_ids = inters[0], inters[1:]
             temp_dictionary[u_id] = set(pos_ids)
         return temp_dictionary
+    
     def dataSplitingDataLeakage(self,keys_itemLisDataLeakage):
         new_train, new_test = dict(), dict()
         for key, items in keys_itemLisDataLeakage.items():
@@ -114,6 +122,33 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
                 new_train[key] =  set(temp_list[:-selectedRatio])
                 new_test[key] =   set(temp_list[-selectedRatio:])
         return new_train, new_test
+    
+    def count_interactions_per_user_item(self, df):
+        user_interaction = df.groupby("UserID")["ItemID"].count()
+        item_interaction = df.groupby("ItemID")["UserID"].count()
+        if user_interaction.empty:
+            print("No interactions found for users.")
+        else:
+            print("Interactions per user --> Minimum: %d Maximum: %d" % (min(user_interaction), max(user_interaction)))
+        if item_interaction.empty:
+            print("No interactions found for items.")
+        else:
+            print("Interactions per item --> Minimum: %d Maximum: %d" % (min(item_interaction), max(item_interaction)))
+
+    def checkLeakage(self, train_dictionary, test_dictionary):
+        checkLeakage = len([key for key, item in test_dictionary.items() if (len(set(item).intersection(train_dictionary[key])) > 0)])
+        if (checkLeakage == 0):
+            print("We do not observe data leakage issue")
+        else:
+            print("Total users: %d, Users with data leakage: %d"% (len(train_dictionary), checkLeakage))
+
+    def conversion_set_list(self, setDictionary):
+        temp_dict = dict()
+        for key, _ in setDictionary.items():
+            temp_dict[key] = list(setDictionary[key])
+
+        return temp_dict
+
         
 
 

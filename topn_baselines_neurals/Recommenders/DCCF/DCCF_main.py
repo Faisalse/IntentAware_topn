@@ -19,7 +19,7 @@ torch.cuda.manual_seed(seed)
 torch.cuda.manual_seed_all(seed)
 torch.backends.cudnn.benchmark = False
 torch.backends.cudnn.deterministic = True
-
+import time
 
 class EarlyStopping:
     def __init__(self, patience=10, delta=0):
@@ -57,7 +57,7 @@ def load_adjacency_list_data(adj_mat):
 
     return all_h_list, all_t_list, all_v_list
 
-def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ks = [1,5, 10, 20]):
+def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ks = [1,5, 10, 20], NumberOfUserInTestingData = 5000):
 
     """
     *********************************************************
@@ -119,7 +119,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
     if validation == True:
         print("Start Early Stopping mechanism to get best epoch values")
         earlystopping = EarlyStopping(patience=args.patience)
-
+    start = time.time()
     for epoch in range(args.epoch):
         
         n_samples = data_generator.uniform_sample()
@@ -142,7 +142,6 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
             optimizer.step()
         
         if validation == True:
-
             with torch.no_grad():
                 _model.eval()
                 _model.inference()
@@ -155,12 +154,23 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
             earlystopping(recall, epoch)
             if earlystopping.early_stop:
                 return earlystopping.epoch + 1
-    
+    time_dictionary = dict()
+    training_time = time.time() - start
     if validation == True:
         return args.epoch
     else:
         with torch.no_grad():
+            assert len(list(data_generator.test_set.keys())) == NumberOfUserInTestingData, "Number of test users must be equal for DCCF and baseline models"
+            start = time.time()
             _model.eval()
             _model.inference()
             final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
-        return final_test_ret
+            users = len(list(data_generator.test_set.keys()))
+            test_time = time.time() - start
+
+            
+            time_dictionary["trainingTime"] = training_time
+            time_dictionary["testingTime"] = test_time
+            time_dictionary["AverageTestTimePerUser"] = test_time / NumberOfUserInTestingData
+
+        return final_test_ret, time_dictionary
