@@ -83,7 +83,6 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
         URM_dataframe["Data"] = 1
         URM_dataframe['UserID']= URM_dataframe['UserID'].astype(str)
         URM_dataframe['ItemID']= URM_dataframe['ItemID'].astype(str)
-
         return URM_dataframe
     
     def checkLeakage(self, train_dictionary, test_dictionary):

@@ -20,7 +20,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='alibabaFashion', help="alibabaFashion / amazonBook / lastFm")
     parser.add_argument('--lastFMDataLeakage', type = bool, default=False, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
