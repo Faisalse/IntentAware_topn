@@ -59,8 +59,8 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
                 for key, _ in train_dictionary_temp.items():
                     train_dictionary[key] = list(train_dictionary_temp[key])
                     test_dictionary[key] = list(test_dictionary_temp[key])
+                self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
             else:
-
                 train_dictionary = self.conversion_set_list(train_dictionary)
                 test_dictionary = self.conversion_set_list(test_dictionary)
 

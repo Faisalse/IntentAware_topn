@@ -25,7 +25,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='tmall', help="tmall / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='gowalla', help="tmall / gowalla / tmall")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     df["AverageTestTimePerUser(s)"] = [time_dictionary["AverageTestTimePerUser"]]
     df.to_csv(saved_results + "/"+args.dataset+"_DCCF.txt", index = False)
     ############### END ############################################
-    
+    """
     
     ############### RUN EXPERIMENTS FOR BASELINE MODELS ########################
     total_elements = URM_train.shape[0] * URM_train.shape[1]
@@ -79,13 +79,13 @@ if __name__ == '__main__':
           (URM_train.shape[0], URM_train.shape[1], non_zero_elements, density, np.sum(np.diff(URM_test.indptr) == 0)))
     
     recommender_class_list = [
-        Random,
-        TopPop,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender,
-        P3alphaRecommender,
-        RP3betaRecommender,
-        EASE_R_Recommender
+        Random
+        #TopPop,
+        #ItemKNNCFRecommender,
+        #UserKNNCFRecommender,
+        #P3alphaRecommender,
+        #RP3betaRecommender,
+        #EASE_R_Recommender
         ]
     
     ##### Best HP values for baseline models.....
@@ -107,12 +107,12 @@ if __name__ == '__main__':
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
         recommender_class_list = [
-        Random,
-        TopPop,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender,
-        P3alphaRecommender,
-        RP3betaRecommender
+        Random
+        #TopPop,
+        #ItemKNNCFRecommender,
+        #UserKNNCFRecommender,
+        #P3alphaRecommender,
+        #RP3betaRecommender
         ]
 
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
@@ -162,7 +162,7 @@ if __name__ == '__main__':
             traceback.print_exc()
             
         ################################ END ##################################
-    
+    """
     
 
 
