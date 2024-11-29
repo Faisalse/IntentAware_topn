@@ -28,11 +28,12 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
         return self.DATASET_SUBFOLDER
     def _load_data_from_give_files(self, datapath, dataset = "lastFM", dataLeakage = False, validation = False , validation_portion = 0.1):
         
-        zipFile_path = datapath
+        
         try:
-            train_dictionary = self.read_cf(zipFile_path / "train.txt")
-            test_dictionary = self.read_cf(zipFile_path / "test.txt")
+            train_dictionary = self.read_cf(datapath / "train.txt")
+            test_dictionary = self.read_cf(datapath / "test.txt")
             self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
+            
             if dataset == "lastFm" and dataLeakage == True:
                 keys_with_dataLeakage = [key for key, item in train_dictionary.items() if len(test_dictionary[key].intersection(train_dictionary[key])) > 0]
 
@@ -68,7 +69,7 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
 
                    
         except FileNotFoundError:
-            print(f"File not found: {zipFile_path}")
+            print(f"File not found: {datapath}")
         
         URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_dictionary.copy(), test_dictionary.copy())
         self.count_interactions_per_user_item(URM_dataframe)

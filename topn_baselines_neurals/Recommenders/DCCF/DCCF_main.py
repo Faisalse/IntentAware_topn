@@ -109,10 +109,6 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
     _model = DCCF(config, args).cuda()
     optimizer = optim.Adam(_model.parameters(), lr=args.lr)
 
-    print("Start Training")
-    stopping_step = 0
-    last_state_dict = None
-    
     if validation == True:
         print("Start Early Stopping mechanism to get best epoch values")
         earlystopping = EarlyStopping(patience=args.patience)
@@ -143,7 +139,8 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
                 _model.eval()
                 _model.inference()
                 final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
-            recall = final_test_ret["recall"][3]
+            
+            recall = final_test_ret["Recall@20"].getScore()
             print ("Patience value: ", str(earlystopping.patience), "Counter value: ", str(earlystopping.counter),
                     " Best Previous Recall Score: ",str(earlystopping.best_score), " Current Recall:", str(recall) )
             
@@ -170,4 +167,9 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
             time_dictionary["testingTime"] = test_time
             time_dictionary["AverageTestTimePerUser"] = test_time / NumberOfUserInTestingData
 
-        return final_test_ret, time_dictionary
+            temp_dict = {}
+            for key, value in final_test_ret.items():
+                temp_dict[key] = final_test_ret[key].getScore()
+            final_test_ret = {**temp_dict, **time_dictionary}
+
+        return final_test_ret

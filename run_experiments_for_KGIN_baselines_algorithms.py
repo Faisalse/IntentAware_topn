@@ -21,7 +21,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
-    parser.add_argument('--lastFMDataLeakage', type = bool, default=True, help="False / True")
+    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=True, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -33,6 +33,8 @@ if __name__ == '__main__':
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
     start = time.time()
+
+    # optimal hyperparameter values provided by original authors for each dataset....
     if dataset_name == "lastFm":
         dim=64
         lr= 0.0001
@@ -77,7 +79,7 @@ if __name__ == '__main__':
     ############### BASELINE MODELS DATA PREPARATION ###############
     validation_set = False
     dataset_object = lastFM_AmazonBook_AliBabaFashion_KGIN()
-    URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, dataset = args.dataset, dataLeakage = args.lastFMDataLeakage, validation=validation_set)
+    URM_train, URM_test = dataset_object._load_data_from_give_files(data_path, dataset = args.dataset, dataLeakage = args.resolveLastFMDataLeakageIssue, validation=validation_set)
     ICM_all = None
     UCM_all = None
 
@@ -93,7 +95,7 @@ if __name__ == '__main__':
      
     result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
                                            node_dropout=node_dropout, node_dropout_rate=node_dropout_rate, mess_dropout=mess_dropout, 
-                                           mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch, lastFMDataLeakage = args.lastFMDataLeakage, datasetName = args.dataset)
+                                           mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch, lastFMDataLeakage = args.resolveLastFMDataLeakageIssue, datasetName = args.dataset)
     
     result_df.to_csv(saved_results+"/"+"KGIN_"+dataset_name+".text", index = False, sep = "\t")
     """
@@ -177,7 +179,7 @@ if __name__ == '__main__':
             print("Algorithm: {}, results: \n{}".format(recommender_class, results_run_string_1))
             results_run_1["cuttOff"] = results_run_1.index
             results_run_1.insert(0, 'cuttOff', results_run_1.pop('cuttOff'))
-            if args.lastFMDataLeakage == True:
+            if args.resolveLastFMDataLeakageIssue == True:
                 results_run_1.to_csv(saved_results+"/"+args.dataset+"_ResultWithDataLeakageLastFM"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
             else:
                 results_run_1.to_csv(saved_results+"/"+args.dataset+"_ResultWithDataLeakage"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)

@@ -24,14 +24,13 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='amazonbook', help="tmall / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='gowalla', help="tmall / gowalla / tmall")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
     data_path = Path("data/DCCF/"+dataset_name)
     data_path = data_path.resolve()
-    
     commonFolderName = "results"
     model = "DCCF"
     saved_results = "/".join([commonFolderName, model] )
@@ -48,18 +47,19 @@ if __name__ == '__main__':
     
     ############### RUN EXPERIMENTS FOR DCCF ########################
     
-    best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks, NumberOfUserInTestingData = 0)
-    print("Start tuning by Best Epoch Value"+str(best_epoch))
-    metrics_dic, time_dictionary = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = 
-                                                           best_epoch , ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
+    #best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks, NumberOfUserInTestingData = 0)
+    #print("Start tuning by Best Epoch Value"+str(best_epoch))
+    metrics_dic = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = 
+                                                           1 , ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
+    
+    for key, value in metrics_dic.items():
+        print(str(key)+": "+str(value))
     
     expanded_data = [(key, value) for key, value in metrics_dic.items()]
     df = pd.DataFrame(expanded_data, columns=['Measures', 'Values'])
-    df.to_csv(saved_results + "/"+args.dataset+"_BIGCF.txt", index = False)
-
     df.to_csv(saved_results + "/"+args.dataset+"_DCCF.txt", index = False)
     ############### END ############################################
-    """
+    
     
     ############### RUN EXPERIMENTS FOR BASELINE MODELS ########################
     total_elements = URM_train.shape[0] * URM_train.shape[1]
@@ -69,13 +69,13 @@ if __name__ == '__main__':
           (URM_train.shape[0], URM_train.shape[1], non_zero_elements, density, np.sum(np.diff(URM_test.indptr) == 0)))
     
     recommender_class_list = [
-        Random
-        #TopPop,
-        #ItemKNNCFRecommender,
-        #UserKNNCFRecommender,
-        #P3alphaRecommender,
-        #RP3betaRecommender,
-        #EASE_R_Recommender
+        Random,
+        TopPop,
+        ItemKNNCFRecommender,
+        UserKNNCFRecommender,
+        P3alphaRecommender,
+        RP3betaRecommender,
+        EASE_R_Recommender
         ]
     
     ##### Best HP values for baseline models.....
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 
             elif isinstance(recommender_object, UserKNNCFRecommender):
                 fit_params = {"topK": userkNN_best_HP["topK"],  "similarity": userkNN_best_HP["similarity"]}
-
+            
             elif isinstance(recommender_object, P3alphaRecommender):
                 fit_params = {"topK": RP3alpha_best_HP["topK"], "alpha": RP3alpha_best_HP["alpha"], "normalize_similarity": RP3alpha_best_HP["normalize_similarity"]}
             
@@ -151,8 +151,8 @@ if __name__ == '__main__':
         except Exception as e:
             traceback.print_exc()
             
-        ################################ END ##################################
-    """
+    ################################ END ##################################
+    
     
 
 

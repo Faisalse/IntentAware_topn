@@ -80,13 +80,15 @@
   </ul>
 </p>
 
-
-
 <h2>Instructions to Run Experiments for Intent Aware and Non-intent Aware Recommender Systems</h2>
 <h5>Learning Intents behind Interactions with Knowledge Graph for Recommendation (KIGN)</h5><ul>
-<li>Run this command to reproduce the experiments for the KGIN and baseline models on the lastFm dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset lastFm</code>  </li>
+
 <li>Run this command to reproduce the experiments for the KGIN and baseline models on the alibabaFashion dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset alibabaFashion</code>  </li>
 <li>Run this command to reproduce the experiments for the KGIN and baseline models on the amazonBook dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset amazonBook</code>  </li>
+
+<li>Run this command to reproduce the experiments for the KGIN and baseline models on the lastFm dataset: <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset lastFm</code>  </li>
+
+<li>Run this command to reproduce the experiments for the KGIN and baseline models on the lastFm dataset (without data leakage): <code>python run_experiments_for_KGIN_baselines_algorithms.py --dataset lastFm resolveLastFMDataLeakageIssue True</code>  </li>
 </ul>
 
 
