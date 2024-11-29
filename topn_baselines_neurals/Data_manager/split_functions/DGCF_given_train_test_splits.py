@@ -38,7 +38,6 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
     if use_validation_set:
          URM_validation_builder_train = IncrementalSparseMatrix(auto_create_row_mapper=False, n_rows = n_users,
                                                           auto_create_col_mapper=False, n_cols = n_items)
-         
          URM_validation_builder_test = IncrementalSparseMatrix(auto_create_row_mapper=False, n_rows = n_users,
                                                           auto_create_col_mapper=False, n_cols = n_items)
     
@@ -62,10 +61,9 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
             else:
                 for item_ in test_records_items:
                     user_profile.remove(item_)
-                
                 URM_test_builder.add_data_lists([user_id]*len(test_records_items), test_records_items, np.ones(len(test_records_items)))
                 URM_train_builder.add_data_lists([user_id]*len(user_profile), user_profile, np.ones(len(user_profile)))
-        
+                
         else:
             start_user_position = URM.indptr[user_id]
             end_user_position = URM.indptr[user_id+1]
@@ -133,7 +131,6 @@ def update_item_ids_of_original_data(dictionary_item_original_to_index, user_ori
         temp = set()
         for item in items_set:
             temp.add(dictionary_item_original_to_index[str(item)])
-        
         updated_original_test_data[user_original_ID_to_index[str(uid)]] = temp
 
     return updated_original_test_data

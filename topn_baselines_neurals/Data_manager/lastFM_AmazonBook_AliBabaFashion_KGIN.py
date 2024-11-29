@@ -33,7 +33,7 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
             train_dictionary = self.read_cf(datapath / "train.txt")
             test_dictionary = self.read_cf(datapath / "test.txt")
             self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
-            
+
             if dataset == "lastFm" and dataLeakage == True:
                 keys_with_dataLeakage = [key for key, item in train_dictionary.items() if len(test_dictionary[key].intersection(train_dictionary[key])) > 0]
 
@@ -64,8 +64,6 @@ class lastFM_AmazonBook_AliBabaFashion_KGIN(DataReader):
             else:
                 train_dictionary = self.conversion_set_list(train_dictionary)
                 test_dictionary = self.conversion_set_list(test_dictionary)
-
-
 
                    
         except FileNotFoundError:

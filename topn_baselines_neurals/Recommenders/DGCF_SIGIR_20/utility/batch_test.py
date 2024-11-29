@@ -13,13 +13,13 @@ from  tqdm import tqdm
 
 #  import m
 from topn_baselines_neurals.Recommenders.DGCF_SIGIR_20.utility.accuracy_measures import *
-Recall_ = dict()
-NDCG_ = dict()
+measure_Recall_NDCG = dict()
 
-for i in [5, 10, 20]:
-    Recall_["Recall_"+str(i)] = Recall(i)
-    NDCG_["NDCG"+str(i)] = NDCG(i)
-Recall_.update(NDCG_)
+
+for i in [1, 5, 10, 20, 50, 100]:
+    measure_Recall_NDCG["Recall_"+str(i)] = Recall(i)
+    measure_Recall_NDCG["NDCG"+str(i)] = NDCG(i)
+
 
 def model_testing(sess, model, users_to_test, test_data_dic = None, ITEM_NUM = None, BATCH_SIZE = 100):
     
@@ -40,10 +40,14 @@ def model_testing(sess, model, users_to_test, test_data_dic = None, ITEM_NUM = N
 
         for i in range(len(user_batch)):
             user_id = user_batch[i]
-            user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
-            for key in Recall_:
-                Recall_[key].add(set(test_data_dic[user_id]), user_item_score.copy())
-    return Recall_
+            user_item_score =  np.argsort(rate_batch[i])[-100:][::-1]
+            for key in measure_Recall_NDCG:
+                measure_Recall_NDCG[key].add(set(test_data_dic[user_id]), user_item_score.copy())
+
+    measure_Recall_NDCG_temp = dict()
+    for key, _ in measure_Recall_NDCG.items():
+        measure_Recall_NDCG_temp[key] = measure_Recall_NDCG[key].getScore()
+    return measure_Recall_NDCG_temp
 
 
 

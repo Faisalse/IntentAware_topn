@@ -32,21 +32,20 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
 
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
-    def _load_data_from_give_files(self, validation = False, data_name = "yelp2018", validation_portion = 0.1):
+    def _load_data_from_give_files(self, data_path = "yelp2018", validation = False, validation_portion = 0.1):
         
-        zipFile_path = data_name
         train_dictionary = dict()
         test_dictionary = dict()
-        try:
 
-            with open(zipFile_path/ "train.txt") as f:
+        try:
+            with open(data_path/ "train.txt") as f:
                 for l in f.readlines():
                     if len(l) > 0:
                         l = l.strip('\n').split(' ')
                         items = [int(i) for i in l[1:]]
                         train_dictionary[l[0]] = items
             
-            with open(zipFile_path/"test.txt") as f:
+            with open(data_path/"test.txt") as f:
                 for l in f.readlines():
                     if len(l) > 0:
                         l = l.strip('\n').split(' ')
@@ -55,8 +54,9 @@ class Gowalla_Yelp_Amazon_DGCF(DataReader):
                             test_dictionary[l[0]] = items
                         except:
                             pass
+                        
         except FileNotFoundError:
-            print(f"File not found: {zipFile_path}")
+            print(f"File not found: {data_path}")
         self.checkLeakage(train_dictionary.copy(), test_dictionary.copy())
         URM_dataframe = self.convert_dictionary_to_dataframe_DGCF(train_dictionary.copy(), test_dictionary.copy())
         self.count_interactions_per_user_item(URM_dataframe)

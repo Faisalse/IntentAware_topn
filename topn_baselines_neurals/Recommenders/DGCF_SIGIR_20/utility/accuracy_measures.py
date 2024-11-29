@@ -129,8 +129,6 @@ class Novelty:
         self.novelty += np.sum(-np.log2(probability)/self.n_items)
         
         
-    
-    
     def getScore(self):
         return self.novelty / self.numberOfUser
     

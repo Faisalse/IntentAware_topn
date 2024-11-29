@@ -25,7 +25,6 @@ class Data(object):
             if validation == True:
                 print("data validation")
                 train_mat, test_mat = self.split_sparse_matrix(train_mat)
-            print("Faisal")
 
         except Exception as e:
             print("Try an alternative way of reading the data.")

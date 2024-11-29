@@ -96,9 +96,6 @@ def run_experiments_KGIN_model(dataset, dim=64, lr= 0.0001, sim_regularity=0.000
     """build dataset"""
     
     train_cf, test_cf, user_dict, n_params, graph, mat_list, userWithDataLeakage = load_data(args, dataset, lastFMDataLeakage, datasetName)
-    
-
-    
     adj_mat_list, norm_mat_list, mean_mat_list = mat_list
 
     n_users = n_params['n_users']
@@ -150,10 +147,9 @@ def run_experiments_KGIN_model(dataset, dim=64, lr= 0.0001, sim_regularity=0.000
 
     result_df["TrainingTime"] = [trainingTime]
     result_df["TestingTimeforAllUser"] = [testingTime]
-    return result_df
+    result_df["AverageTestingPerUser"] = [testingTime  / len(user_dict["test_user_set"])]
 
-
-#ab = run_experiments_KGIN_model()            
+    return result_df         
 
             
 

@@ -154,7 +154,7 @@ def read_cf_avoid_dataLeakage(pathtrain, pathtest):
     keys_with_dataLeakage = [key for key, item in train_dictionary.items() if len(test_dictionary[key].intersection(train_dictionary[key])) > 0]
 
     keys_itemLisDataLeakage = dict()
-    for key in keys_with_dataLeakage:
+    for key in keys_with_dataLeakage: # combine the interactions of users where we observe a data leakage issue
         keys_itemLisDataLeakage[key] = train_dictionary[key].union(test_dictionary[key])
     
     keyToRemove  = [key for key, items in keys_itemLisDataLeakage.items() if len(items) < 2]
@@ -180,7 +180,7 @@ def read_cf_avoid_dataLeakage(pathtrain, pathtest):
             inter_mat_test.append([u_id, i_id])
 
     return np.array(inter_mat_train), np.array(inter_mat_test), keyToRemove
-
+# data spliting.....
 def dataSplitingDataLeakage(keys_itemLisDataLeakage):
     new_train, new_test = dict(), dict()
     for key, items in keys_itemLisDataLeakage.items():
@@ -194,7 +194,7 @@ def dataSplitingDataLeakage(keys_itemLisDataLeakage):
             new_test[key] =   set(temp_list[-selectedRatio:])
     return new_train, new_test
 
-      
+    
 def load_data(model_args, datapath, lastFMDataLeakage, datasetName):
     global args
     args = model_args

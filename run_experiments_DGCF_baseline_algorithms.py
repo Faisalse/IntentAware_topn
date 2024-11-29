@@ -18,13 +18,15 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     else:
         recommender_object = recommender_class(URM_train)
     return recommender_object
+
 if __name__ == '__main__':
+
     commonFolderName = "experiments_results"
     model = "DGCF"
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='gowalla', help="yelp2018, gowalla, amazonbook")
-
     args = parser.parse_args()
+
     dataset_name = args.dataset
     commonFolderName = "results"
     data_path = Path("data/DGCF/")
@@ -33,11 +35,8 @@ if __name__ == '__main__':
     datasetName = args.dataset+".pkl"
     
     model = "DGCF"
-    validation_set = False
     dataset_object = Gowalla_Yelp_Amazon_DGCF()
-    URM_train, URM_test = dataset_object._load_data_from_give_files(validation=validation_set, data_name = data_path / dataset_name)
-    ICM_all = None
-    UCM_all = None
+    URM_train, URM_test = dataset_object._load_data_from_give_files(data_path = data_path / dataset_name)
 
     total_elements = URM_train.shape[0] * URM_train.shape[1]
     non_zero_elements = URM_train.nnz + URM_test.nnz
@@ -46,8 +45,9 @@ if __name__ == '__main__':
     
     print("Number of users: %s, Items: %d, Interactions: %d, Density %.5f, Number of users with no test items: %d." % 
           (URM_train.shape[0], URM_train.shape[1], non_zero_elements, density, np.sum(np.diff(URM_test.indptr) == 0)))
-    saved_results = "/".join([commonFolderName,model,args.dataset] )
+    
     # If directory does not exist, create
+    saved_results = "/".join([commonFolderName,model,args.dataset] )
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
     output_root_path = saved_results+"/"
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     for recommender_class in recommender_class_list:
         try:
             print("Algorithm: {}".format(recommender_class))
-            recommender_object = _get_instance(recommender_class, URM_train, ICM_all, UCM_all)
+            recommender_object = _get_instance(recommender_class, URM_train, None, None)
             if isinstance(recommender_object, Incremental_Training_Early_Stopping):
                 fit_params = {"epochs": 15}
 
@@ -108,9 +108,12 @@ if __name__ == '__main__':
                 fit_params = {"topK": RP3alpha_best_HP["topK"], "alpha": RP3alpha_best_HP["alpha"], "normalize_similarity": RP3alpha_best_HP["normalize_similarity"]}
             
             elif isinstance(recommender_object, RP3betaRecommender):
-                fit_params = {"topK": RP3beta_best_HP["topK"], "alpha": RP3beta_best_HP["alpha"], "beta": RP3beta_best_HP["beta"], "normalize_similarity": RP3beta_best_HP["normalize_similarity"]}
+                fit_params = {"topK": RP3beta_best_HP["topK"], "alpha": RP3beta_best_HP["alpha"], "beta": RP3beta_best_HP["beta"], 
+                              "normalize_similarity": RP3beta_best_HP["normalize_similarity"]}
+                
             else: # get defaut parameters...........
                 fit_params = {}
+                
             # measure training time.....
             start = time.time()
             recommender_object.fit(**fit_params)

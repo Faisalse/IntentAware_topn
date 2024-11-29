@@ -166,12 +166,12 @@ def model_evaluation(model, user_dict, n_params, userWithDataLeakage, lastFMData
                 if user_id in userWithDataLeakage:
                     pass
                 else:
-                    user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
+                    user_item_score =  np.argsort(rate_batch[i])[-100:][::-1] # return top 100 items and sort them in descending order.....
                     for key in Recall_:
                         Recall_[key].add(set(test_user_set[user_id]), user_item_score.copy())
             
             else:
-                user_item_score =  np.argsort(rate_batch[i])[-20:][::-1]
+                user_item_score =  np.argsort(rate_batch[i])[-100:][::-1] # return top 100 items and sort them in descending order.....
                 for key in Recall_:
                     Recall_[key].add(set(test_user_set[user_id]), user_item_score.copy())
 

@@ -22,6 +22,7 @@ from  tqdm import tqdm
 
 
 
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from topn_baselines_neurals.Recommenders.DGCF_SIGIR_20.utility.helper import *
 from topn_baselines_neurals.Recommenders.DGCF_SIGIR_20.utility.batch_test import *
@@ -403,6 +404,7 @@ def sample_cor_samples(n_users, n_items, cor_batch_size):
     cor_items = rd.sample(list(range(n_items)), cor_batch_size)
     return cor_users, cor_items
 
+import time
 def run_experiments(data_path, args = None):
     data_generator = Data(path= data_path, batch_size=args.batch_size)
     USR_NUM, ITEM_NUM = data_generator.n_users, data_generator.n_items
@@ -437,7 +439,7 @@ def run_experiments(data_path, args = None):
     *********************************************************
     Model Training
     """
-    
+    start = time.time()
     for epoch in tqdm(range(args.epoch)):
 
         print(epoch)
@@ -461,9 +463,15 @@ def run_experiments(data_path, args = None):
             emb_loss += batch_emb_loss / n_batch
             cor_loss += batch_cor_loss / n_batch
             
-            
+    trainingTime = time.time() - start
+    start = time.time()        
     users_to_test = list(data_generator.test_set.keys())
     result = model_testing(sess, model, users_to_test, test_data_dic = data_generator.test_set, ITEM_NUM= ITEM_NUM, BATCH_SIZE= batch_size)
+    testingTime = time.time() - start
+    # measure time
+    result["TrainingTime"] = trainingTime
+    result["TestingTime"] = testingTime
+    result["AverageTestingTimePerUser"] = testingTime / len(users_to_test)
     return result
     
             

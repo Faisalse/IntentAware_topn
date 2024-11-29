@@ -83,7 +83,6 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
             user_profile = URM_train.indices[start_user_position:end_user_position]
             user_interaction_items = user_profile
             user_interaction_data = np.ones(len(user_profile))
-            
             k_out = int(len(user_profile)) - int(len(user_profile) * validation_portion)
 
             if len(user_profile) > 0 and k_out > 0:
@@ -91,10 +90,10 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
                 user_interaction_items_validation = user_interaction_items[k_out:]
                 user_interaction_data_validation = user_interaction_data[k_out:]
                 URM_validation_builder_test.add_data_lists([user_id]*len(user_interaction_data_validation), user_interaction_items_validation, user_interaction_data_validation)
-
                 user_interaction_items_train = user_interaction_items[0:k_out]
                 user_interaction_data_train = user_interaction_data[0:k_out]
                 URM_validation_builder_train.add_data_lists([user_id]*len(user_interaction_items_train), user_interaction_items_train, user_interaction_data_train)
+                
             else:
                 user_interaction_items_train = user_interaction_items
                 user_interaction_data_train = user_interaction_data
@@ -106,9 +105,7 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
     URM_train = sps.csr_matrix(URM_train)
     user_no_item_train = np.sum(np.ediff1d(URM_train.indptr) == 0)
 
-    if user_no_item_train != 0:
-        print("Warning: {} ({:.2f} %) of {} users have no Train items".format(user_no_item_train, user_no_item_train/n_users*100, n_users))
-
+    
     if use_validation_set:
         
         URM_validation_train = URM_validation_builder_train.get_SparseMatrix()
@@ -123,6 +120,7 @@ def split_train_test_validation(loaded_dataset, test_data_dictionary, validation
         if user_no_item_validation != 0:
             print("Warning: {} ({:.2f} %) of {} users have no Validation items".format(user_no_item_validation, user_no_item_validation/n_users*100, n_users))
         return URM_train, URM_test, URM_validation_train, URM_validation_test
+    
     return URM_train, URM_test
 
 

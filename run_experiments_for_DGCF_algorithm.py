@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument('--pretrain', type=int, default=0, help='0: No pretrain, 1:Use stored models.')
     parser.add_argument('--embed_name', nargs='?', default='', help='Name for pretrained model.')
     parser.add_argument('--verbose', type=int, default=1, help='Interval of evaluation.')
-    parser.add_argument('--epoch', type=int, default=1000, help='Number of epochs')    # given 3000   
+    parser.add_argument('--epoch', type=int, default=1, help='Number of epochs')    # given 3000   
     parser.add_argument('--embed_size', type=int, default=64, help='Embedding size.')
     parser.add_argument('--layer_size', nargs='?', default='[64]', help='Output sizes of every layer')
     parser.add_argument('--batch_size', type=int, default=1024, help='Batch size.')
@@ -38,15 +38,21 @@ args = parse_args()
 dataset_name  = args.dataset
 data_path = Path("data/DGCF/"+dataset_name)
 data_path = data_path.resolve()
-result_dict = run_experiments(data_path, args = args)
+metrics_dic = run_experiments(data_path, args = args)
+
 commonFolderName = "results"
 model = "DGCF"
-saved_results = "/".join([commonFolderName,model,args.dataset] )
-df = pd.DataFrame()
-for key in result_dict:
-        print( key +": "   +str(result_dict[key].getScore())  )
-        df[key] = [result_dict[key].getScore()]
-df.to_csv(saved_results+model+"_"+args.dataset+".txt")
+saved_results = "/".join([commonFolderName, model] )
+if not os.path.exists(saved_results):
+    os.makedirs(saved_results)
+
+
+for key, value in metrics_dic.items():
+        print(str(key)+": "+str(value))
+    
+expanded_data = [(key, value) for key, value in metrics_dic.items()]
+df = pd.DataFrame(expanded_data, columns=['Measures', 'Values'])
+df.to_csv(saved_results + "/"+args.dataset+"_DGCF.txt", index = False)
 
 # python run_experiments_for_DGCF_algorithm.py --dataset yelp2018
 # python run_experiments_for_DGCF_algorithm.py --dataset gowalla --batch_size 2000 --n_layers 1 --n_iterations 2 --corDecay 0.01 --n_factors 4 --show_step 3 --lr 0.001

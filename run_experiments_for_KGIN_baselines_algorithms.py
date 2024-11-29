@@ -20,8 +20,8 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
-    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=True, help="False / True")
+    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=False, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -90,7 +90,7 @@ if __name__ == '__main__':
           (URM_train.shape[0], URM_train.shape[1], non_zero_elements, density, np.sum(np.diff(URM_test.indptr) == 0)))
     ############### END #############################################
 
-    """
+    
     ############### RUN EXPERIMENT KGIN MODEL ###############
      
     result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
                                            mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch, lastFMDataLeakage = args.resolveLastFMDataLeakageIssue, datasetName = args.dataset)
     
     result_df.to_csv(saved_results+"/"+"KGIN_"+dataset_name+".text", index = False, sep = "\t")
-    """
+    
     
 
     ############### RUN EXPERIMENTS FOR BASELINE MODELS ###############

@@ -1,12 +1,11 @@
+
 from topn_baselines_neurals.Data_manager.Gowalla_AmazonBook_Tmall_DCCF import Gowalla_AmazonBook_Tmall_DCCF 
 from topn_baselines_neurals.Recommenders.Recommender_import_list import *
 from topn_baselines_neurals.Recommenders.BIGCF.BIGCF_main import *
 from pathlib import Path
 import pandas as pd
 import argparse
-import ast
 import os
-
 
 def run_experiments(dataset = "gowalla"):
     parser = argparse.ArgumentParser(description='Accept data name as input')
@@ -16,11 +15,11 @@ def run_experiments(dataset = "gowalla"):
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     
-    args.dataset = dataset
+    args.dataset = dataset # after experiments make it normal....
     if args.dataset == "gowalla":
-        args.epoch = 200
+        args.epoch = 150
         args.ssl_reg = 0.4
-    elif args.dataset == "amazonbook":
+    elif args.dataset == "amazonBook":
         args.epoch = 200
         args.ssl_reg = 0.4
     elif args.dataset == "tmall":
@@ -28,6 +27,7 @@ def run_experiments(dataset = "gowalla"):
         args.ssl_reg = 0.2
     else:
         pass
+
     dataset_name = args.dataset
     commonFolderName = "results"
     #### DCCF and BIGCF are using same train test splits.....
@@ -57,8 +57,8 @@ def run_experiments(dataset = "gowalla"):
     df.to_csv(saved_results + "/"+args.dataset+"_BIGCF.txt", index = False)
     
 if __name__ == '__main__':
-    experiments = ["gowalla", "amazonbook", "tmall"]
-    
+
+    experiments = ["amazonBook", "gowalla", "tmall"]
     for data in experiments:
         run_experiments(dataset = data)
     

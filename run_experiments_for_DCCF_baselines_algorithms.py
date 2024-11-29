@@ -22,11 +22,14 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
         recommender_object = recommender_class(URM_train)
     return recommender_object
 
-if __name__ == '__main__':
+def run_experiments(dataset = "gowalla"):
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="tmall / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='gowalla', help="tmall / gowalla / amazonBook")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
+
+    args.dataset = dataset # after experiments make it normal....
+
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
     data_path = Path("data/DCCF/"+dataset_name)
@@ -96,14 +99,7 @@ if __name__ == '__main__':
         userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
-        recommender_class_list = [
-        Random
-        #TopPop,
-        #ItemKNNCFRecommender,
-        #UserKNNCFRecommender,
-        #P3alphaRecommender,
-        #RP3betaRecommender
-        ]
+        
 
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
     for recommender_class in recommender_class_list:
@@ -150,6 +146,12 @@ if __name__ == '__main__':
 
         except Exception as e:
             traceback.print_exc()
+            
+if __name__ == '__main__':
+    experiments = ["gowalla", "amazonbook", "tmall"]
+    
+    for data in experiments:
+        run_experiments(dataset = data)
             
     ################################ END ##################################
     
