@@ -8,7 +8,7 @@ from topn_baselines_neurals.Recommenders.BIGCF.utility.batch_test import *
 from topn_baselines_neurals.Recommenders.BIGCF.utility.load_data import *
 from topn_baselines_neurals.Recommenders.BIGCF.BIGCF import *
 from tqdm import tqdm
-from time import time
+import time
 from copy import deepcopy
 
 args = parse_args()
@@ -56,7 +56,7 @@ def load_adjacency_list_data(adj_mat):
 
     return all_h_list, all_t_list, all_v_list
 
-def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ssl_reg = 0.4, ks = [20, 40]):
+def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = False, epoch = 500, ssl_reg = 0.4, ks = [20, 40], NumberOfUserInTestingData = 50000):
     if not os.path.exists('log'):
         os.mkdir('log')
     logger = logging.getLogger('train_logger')
@@ -111,6 +111,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
         print("Start Early Stopping mechanism to get best epoch values")
         earlystopping = EarlyStopping(patience=args.patience)
 
+    start = time.time()
     for epoch in range(args.epoch):
         print("Epoch number: "+str(epoch))
         n_samples = data_generator.uniform_sample()
@@ -140,7 +141,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
                 _model.inference()
                 final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
                 torch.cuda.empty_cache()
-            recall = final_test_ret["recall"][3]
+            recall = final_test_ret["Recall@20"]
 
             print ("Patience value: ", str(earlystopping.patience), "Counter value: ", str(earlystopping.counter),
                     " Best Previous Recall Score: ",str(earlystopping.best_score), " Current Recall:", str(recall) )
@@ -148,14 +149,29 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
             earlystopping(recall, epoch)
             if earlystopping.early_stop:
                 return earlystopping.epoch + 1
+            
+    time_dictionary = dict()
+    training_time = time.time() - start
 
     if validation == True:
         return args.epoch
     else:
         with torch.no_grad():
+            start = time.time()
             _model.eval()
             _model.inference()
             final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
+            users = len(list(data_generator.test_set.keys()))
+            test_time = time.time() - start
+            time_dictionary["trainingTime"] = training_time
+            time_dictionary["testingTime"] = test_time
+            time_dictionary["AverageTestTimePerUser"] = test_time / NumberOfUserInTestingData
+
+            temp_dict = {}
+            for key, value in final_test_ret.items():
+                temp_dict[key] = final_test_ret[key].getScore()
+            final_test_ret = {**temp_dict, **time_dictionary}
+            
         return final_test_ret
 
     

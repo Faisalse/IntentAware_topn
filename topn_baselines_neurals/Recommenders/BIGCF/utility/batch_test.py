@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-
+from topn_baselines_neurals.Recommenders.BIGCF.utility.accuracy_measures import *
 
 def getLabel(test_data, pred_data):
     r = []
@@ -11,7 +11,6 @@ def getLabel(test_data, pred_data):
         pred = np.array(pred).astype("float")
         r.append(pred)
     return np.array(r).astype('float')
-
 
 def Recall_ATk(test_data, r, k):
     right_pred = r[:, :k].sum(1)
@@ -39,7 +38,7 @@ def NDCGatK_r(test_data, r, k):
 
 
 def test_one_batch(X, topks):
-    sorted_items = X[0].numpy()
+    sorted_items = X[0].numpy() # get the ground turth value.....
     groundTrue = X[1]
     r = getLabel(groundTrue, sorted_items)
     recall, ndcg = [], []
@@ -51,26 +50,23 @@ def test_one_batch(X, topks):
 
 
 def eval_PyTorch(model, data_generator, Ks):
-    result = {'recall': np.zeros(len(Ks)), 'ndcg': np.zeros(len(Ks))}
+    
+    recall_NDCG_dict = dict()
+    for i in Ks:
+        recall_NDCG_dict["Recall@"+str(i)] = Recall(i)
+        recall_NDCG_dict["NDCG@"+str(i)] = NDCG(i)
 
     test_users = list(data_generator.test_set.keys())
-
     u_batch_size = data_generator.batch_size
 
     n_test_users = len(test_users)
     n_user_batchs = n_test_users // u_batch_size + 1
 
-    batch_rating_list = []
-    ground_truth_list = []
-    count = 0
     for u_batch_id in range(n_user_batchs):
         start = u_batch_id * u_batch_size
         end = (u_batch_id + 1) * u_batch_size
-
         user_batch = test_users[start: end]
         rate_batch = model.predict(user_batch)
-
-        count += rate_batch.shape[0]
 
         exclude_index = []
         exclude_items = []
@@ -80,22 +76,16 @@ def eval_PyTorch(model, data_generator, Ks):
             exclude_index.extend([i] * len(train_items))
             exclude_items.extend(train_items)
             ground_truth.append(list(data_generator.test_set[user_batch[i]]))
+
         rate_batch[exclude_index, exclude_items] = -(1 << 20)
         _, rate_batch_k = torch.topk(rate_batch, k=max(Ks))
-        batch_rating_list.append(rate_batch_k.cpu())
-        ground_truth_list.append(ground_truth)
+        rate_batch = rate_batch_k.cpu()
 
-    X = zip(batch_rating_list, ground_truth_list)
-    batch_results = []
-    for x in X:
-        batch_results.append(test_one_batch(x, Ks))
-    for batch_result in batch_results:
-        result['recall'] += batch_result['recall'] / n_test_users
-        result['ndcg'] += batch_result['ndcg'] / n_test_users
-
-    assert count == n_test_users
-
-    return result
+        for i in range(len(ground_truth)):
+            predicted_items = list(np.array(rate_batch[i]))
+            for key in recall_NDCG_dict:
+                recall_NDCG_dict[key].add(set(ground_truth[i]), predicted_items)
+    return recall_NDCG_dict
 
 def sparse_eval_PyTorch(model, data_generator, Ks):
 
@@ -123,8 +113,6 @@ def sparse_eval_PyTorch(model, data_generator, Ks):
 
             user_batch = user_list[k][start: end]
             rate_batch = model.predict(user_batch)
-
-            count += rate_batch.shape[0]
 
             exclude_index = []
             exclude_items = []

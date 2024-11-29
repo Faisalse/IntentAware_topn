@@ -26,21 +26,20 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
         return self.DATASET_SUBFOLDER
     def _load_data_from_give_files(self, datapath, validation = False , validation_portion = 0.1):
         
-        
-        zipFile_path = datapath
+        # get the provided train-test splits....
         try:
-            train_file = zipFile_path / 'train.pkl'
-            test_file = zipFile_path / 'test.pkl'
+            train_file = datapath / 'train.pkl'
+            test_file = datapath / 'test.pkl'
 
             with open(train_file, 'rb') as f:
                 train_mat = pickle.load(f)
             with open(test_file, 'rb') as f:
                 test_mat = pickle.load(f)
         except FileNotFoundError:
-            print(f"File not found: {zipFile_path}")
+            print(f"File not found: {datapath}")
 
         R = train_mat.todok() # dok --> dictionary of keys....
-        train_items, test_set = {}, {} # list of items each user interacted in training data and list of items each user interacted in test data......
+        train_items, test_set = {}, {} # get list of items each user interacted in training data and list of items each user interacted in test data......
         train_uid, train_iid = train_mat.row, train_mat.col
         for i in range(len(train_uid)):
             uid = train_uid[i]
@@ -78,7 +77,6 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
             return URM_train, URM_test
         
     def convert_dictionary_to_dataframe_DGCF(self, train_dictionary, test_dictionary):
-
         for key, _ in test_dictionary.items():
             train_dictionary[key]+=test_dictionary[key] 
         expanded_data = [(key, value) for key, values in train_dictionary.items() for value in values]
@@ -87,8 +85,8 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
         URM_dataframe["Data"] = 1
         URM_dataframe['UserID']= URM_dataframe['UserID'].astype(str)
         URM_dataframe['ItemID']= URM_dataframe['ItemID'].astype(str)
-
-        return URM_dataframe
+        return URM_dataframe # return dataframe, which contains all interactions from the training dictionary and testing dictionary.
+    
     def checkLeakage(self, train_dictionary, test_dictionary):
         checkLeakage = len([key for key, item in test_dictionary.items() if (len(set(item).intersection(train_dictionary[key])) > 0)])
         if (checkLeakage == 0):
@@ -97,8 +95,8 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
             print("Total users: %d, Users with data leakage: %d", (len(train_dictionary), checkLeakage))
 
     def count_interactions_per_user_item(self, df):
-        user_interaction = df.groupby("UserID")["ItemID"].count()
-        item_interaction = df.groupby("ItemID")["UserID"].count()
+        user_interaction = df.groupby("UserID")["Data"].count()  # count min and max number of interactions of per user and per item
+        item_interaction = df.groupby("ItemID")["Data"].count()
         if user_interaction.empty:
             print("No interactions found for users.")
         else:

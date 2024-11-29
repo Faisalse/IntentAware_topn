@@ -7,7 +7,7 @@ class Recall:
         self.score = 0
         self.numberOfUsers = 0
     def add(self, relevantItems, retrieveList ):
-       
+        
         self.score+=len(      relevantItems &     set(retrieveList[:self.length])    ) / len(relevantItems)
         self.numberOfUsers+=1
         

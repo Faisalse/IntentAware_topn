@@ -77,7 +77,6 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
     args.epoch = epoch
     args.data_path = path
     args.Ks = ks
-
     """
     *********************************************************
     Prepare the dataset
@@ -86,8 +85,6 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
     print(args)
     data_generator = Data(args, validation = validation)
     logger.info(data_generator.get_statistics())
-    
-    
     logger.info(args)
     print("************************************************************************************")
 
@@ -147,13 +144,13 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
                 _model.inference()
                 final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
             recall = final_test_ret["recall"][3]
-
             print ("Patience value: ", str(earlystopping.patience), "Counter value: ", str(earlystopping.counter),
                     " Best Previous Recall Score: ",str(earlystopping.best_score), " Current Recall:", str(recall) )
             
             earlystopping(recall, epoch)
             if earlystopping.early_stop:
                 return earlystopping.epoch + 1
+            
     time_dictionary = dict()
     training_time = time.time() - start
     if validation == True:

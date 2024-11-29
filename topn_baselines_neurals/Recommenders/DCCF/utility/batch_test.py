@@ -51,7 +51,6 @@ def test_one_batch(X, topks):
 
 def eval_PyTorch(model, data_generator, Ks):
     result = {'recall': np.zeros(len(Ks)), 'ndcg': np.zeros(len(Ks))}
-
     test_users = list(data_generator.test_set.keys())
     
     u_batch_size = data_generator.batch_size
@@ -93,5 +92,4 @@ def eval_PyTorch(model, data_generator, Ks):
         result['ndcg'] += batch_result['ndcg'] / n_test_users
 
     assert count == n_test_users
-
     return result

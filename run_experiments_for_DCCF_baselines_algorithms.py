@@ -14,7 +14,6 @@ import ast
 
 
 def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
-
     if issubclass(recommender_class, BaseItemCBFRecommender):
         recommender_object = recommender_class(URM_train, ICM_all)
     elif issubclass(recommender_class, BaseUserCBFRecommender):
@@ -25,7 +24,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="tmall / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='amazonbook', help="tmall / gowalla / tmall")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -38,7 +37,6 @@ if __name__ == '__main__':
     saved_results = "/".join([commonFolderName, model] )
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
-
     ############### BASELINE MODELS DATA PREPARATION ###############
     validation_set = False
     dataset_object = Gowalla_AmazonBook_Tmall_DCCF()
@@ -52,21 +50,13 @@ if __name__ == '__main__':
     
     best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks, NumberOfUserInTestingData = 0)
     print("Start tuning by Best Epoch Value"+str(best_epoch))
-    metrics_dic, time_dictionary = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = best_epoch , ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
-    normal_list = ast.literal_eval(args.Ks)
+    metrics_dic, time_dictionary = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = 
+                                                           best_epoch , ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
     
-    df = pd.DataFrame()
-    for key in metrics_dic:
-        for i in range(len(normal_list)):
-            if (key == "recall"):
-                df[key+"@"+str(normal_list[i])] = [metrics_dic[key][i]]
-                print(key+"@"+str(normal_list[i]) +":"+str(metrics_dic[key][i]))
-            else:
-                df[key+"@"+str(normal_list[i])] = [metrics_dic[key][i]]
-                print(key+"@"+str(normal_list[i]) +":"+str(metrics_dic[key][i]))
-    df["trainingTime(s)"] = [time_dictionary["trainingTime"]]
-    df["testingTime(s)"] = [time_dictionary["testingTime"]]
-    df["AverageTestTimePerUser(s)"] = [time_dictionary["AverageTestTimePerUser"]]
+    expanded_data = [(key, value) for key, value in metrics_dic.items()]
+    df = pd.DataFrame(expanded_data, columns=['Measures', 'Values'])
+    df.to_csv(saved_results + "/"+args.dataset+"_BIGCF.txt", index = False)
+
     df.to_csv(saved_results + "/"+args.dataset+"_DCCF.txt", index = False)
     ############### END ############################################
     """
