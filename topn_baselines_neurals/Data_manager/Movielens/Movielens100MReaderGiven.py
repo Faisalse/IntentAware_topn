@@ -18,26 +18,23 @@ from topn_baselines_neurals.Data_manager.split_functions.ieee_transactions_given
 
 class Movielens100MReaderGiven(DataReader):
 
-    DATASET_URL = "https://github.com/NLPWM-WHU/IDS4NR/blob/main/movielens_100k/movielens100k_longtail_data.pkl"
-    DATASET_SUBFOLDER = "Movielens100M_given/"
-    CONFERENCE_JOURNAL = "IEEE_Transactions_Knowledge_Data_Engineering/"
+    DATASET_URL = ""
+    DATASET_SUBFOLDER = ""
+    CONFERENCE_JOURNAL = ""
     AVAILABLE_URM = ["URM_all"]
     AVAILABLE_ICM = ["ICM_genres"]
     AVAILABLE_UCM = ["UCM_all"]
     
     IS_IMPLICIT = False
-    
     FILE_NAME = "movielens100k_longtail_data.pkl"
     def _get_dataset_name_root(self):
         return self.DATASET_SUBFOLDER
     
     
-    def _load_data_from_give_files(self, validation = False, data_path = "MovieLens.pkl"):
+    def _load_data_from_give_files(self, data_path = "MovieLens.pkl", validation = False):
         
-
-        zipFile_path = data_path
         try:
-            with open(zipFile_path, 'rb') as file:
+            with open(data_path, 'rb') as file:
                 data_dictionary = pickle.load(file)
     
                 train_data = data_dictionary["train_user_list"][1:]
@@ -49,7 +46,7 @@ class Movielens100MReaderGiven(DataReader):
                 
                 
         except FileNotFoundError:
-            print(f"File not found: {zipFile_path}")
+            print(f"File not found: {data_path}")
          
         dataset_manager = DatasetMapperManager()
         dataset_manager.add_URM(URM_dataframe, "URM_all")

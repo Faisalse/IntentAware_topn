@@ -37,10 +37,9 @@ if __name__ == '__main__':
     commonFolderName = "results"
     data_path = Path("data/ID4SNR/")
     data_path = data_path.resolve()
-    validation_set = False
     datasetName = args.dataset+".pkl"
     dataset_object = Movielens100MReaderGiven()
-    URM_train, URM_test, UCM_all = dataset_object._load_data_from_give_files(validation=validation_set, data_path = data_path / datasetName)
+    URM_train, URM_test, UCM_all = dataset_object._load_data_from_give_files(data_path = data_path / datasetName)
     ICM_all = None
     resultFolder = "results"
     saved_results = "/".join([resultFolder,"ID4SNR",dataset_name] )

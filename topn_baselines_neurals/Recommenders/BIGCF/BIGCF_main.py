@@ -141,7 +141,7 @@ def model_tuningAndTraining(dataset_name = "gowalla", path = "", validation = Fa
                 _model.inference()
                 final_test_ret = eval_PyTorch(_model, data_generator, eval(args.Ks))
                 torch.cuda.empty_cache()
-            recall = final_test_ret["Recall@20"]
+            recall = final_test_ret["Recall@20"].getScore()
 
             print ("Patience value: ", str(earlystopping.patience), "Counter value: ", str(earlystopping.counter),
                     " Best Previous Recall Score: ",str(earlystopping.best_score), " Current Recall:", str(recall) )

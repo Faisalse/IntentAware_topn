@@ -27,7 +27,6 @@ def run_experiments(dataset = "gowalla"):
         args.ssl_reg = 0.2
     else:
         pass
-
     dataset_name = args.dataset
     commonFolderName = "results"
     #### DCCF and BIGCF are using same train test splits.....
@@ -47,10 +46,10 @@ def run_experiments(dataset = "gowalla"):
     NumberOfUserInTestingData = URM_test.shape[0] - np.sum(np.diff(URM_test.indptr) == 0)
     ############### END #############################################
     
-    #best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = args.epoch, ssl_reg = args.ssl_reg, ks = args.Ks)
-    #print("Start tuning by Best Epoch Value"+str(best_epoch))
+    best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = args.epoch, ssl_reg = args.ssl_reg, ks = args.Ks)
+    print("Start tuning by Best Epoch Value"+str(best_epoch))
     metrics_dic = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, 
-                                                           epoch = args.epoch, ssl_reg = args.ssl_reg, ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
+                                                           epoch = best_epoch, ssl_reg = args.ssl_reg, ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
     
     expanded_data = [(key, value) for key, value in metrics_dic.items()]
     df = pd.DataFrame(expanded_data, columns=['Measures', 'Values'])
