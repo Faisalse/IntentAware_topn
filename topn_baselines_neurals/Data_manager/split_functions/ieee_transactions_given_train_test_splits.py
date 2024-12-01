@@ -18,14 +18,10 @@ def split_train_test_validation(loaded_dataset, given_test_data, validation = Fa
     :param leave_random_out:
     :return:
     """
-    k_out = 1 
+
     use_validation_set = validation 
     URM = loaded_dataset.AVAILABLE_URM['URM_all']
-    
     updated_test_data = update_item_ids_of_original_data(loaded_dataset.item_original_ID_to_index, given_test_data)
-
-
-    assert k_out > 0, "k_out must be a value greater than 0, provided was '{}'".format(k_out)
 
     URM = sps.csr_matrix(URM)
     n_users, n_items = URM.shape

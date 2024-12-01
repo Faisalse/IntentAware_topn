@@ -20,8 +20,8 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
-    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=False, help="False / True")
+    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=True, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -59,7 +59,7 @@ if __name__ == '__main__':
         gpu_id=0
         context_hops= 3
         epoch = 209 #epoch value is taken from the provided training logs.....
-
+    
     elif dataset_name == "amazonBook":
         dataset= data_path
         dim=64
@@ -92,13 +92,16 @@ if __name__ == '__main__':
 
     
     ############### RUN EXPERIMENT KGIN MODEL ###############
-     
+    """
     result_df = run_experiments_KGIN_model(dataset=data_path, dim=dim, lr = lr, sim_regularity=sim_regularity, batch_size=batch_size, 
                                            node_dropout=node_dropout, node_dropout_rate=node_dropout_rate, mess_dropout=mess_dropout, 
                                            mess_dropout_rate=mess_dropout_rate, gpu_id=gpu_id, context_hops=context_hops, epoch = epoch, lastFMDataLeakage = args.resolveLastFMDataLeakageIssue, datasetName = args.dataset)
     
-    result_df.to_csv(saved_results+"/"+"KGIN_"+dataset_name+".text", index = False, sep = "\t")
-    
+    if args.resolveLastFMDataLeakageIssue == True and args.dataset == "lastFM":
+        result_df.to_csv(saved_results+"/"+"KGIN_resolveLastFMDataLeakageIssue_"+dataset_name+".text", index = False, sep = "\t")
+    else:
+        result_df.to_csv(saved_results+"/"+"KGIN_"+dataset_name+".text", index = False, sep = "\t")
+    """
     
 
     ############### RUN EXPERIMENTS FOR BASELINE MODELS ###############
@@ -179,10 +182,13 @@ if __name__ == '__main__':
             print("Algorithm: {}, results: \n{}".format(recommender_class, results_run_string_1))
             results_run_1["cuttOff"] = results_run_1.index
             results_run_1.insert(0, 'cuttOff', results_run_1.pop('cuttOff'))
-            if args.resolveLastFMDataLeakageIssue == True:
-                results_run_1.to_csv(saved_results+"/"+args.dataset+"_ResultWithDataLeakageLastFM"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
+
+
+            if args.resolveLastFMDataLeakageIssue == True and args.dataset == "lastFm":
+                results_run_1.to_csv(saved_results+"/"+args.dataset+"_resolveDataLeakageIssue_"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
             else:
-                results_run_1.to_csv(saved_results+"/"+args.dataset+"_ResultWithDataLeakage"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
+                results_run_1.to_csv(saved_results+"/"+args.dataset+"_"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
+        
         except Exception as e:
             traceback.print_exc()
     

@@ -104,6 +104,26 @@
 <li>Run this command to reproduce the experiments for the IDS4NR_LFM and baseline models on the Music dataset: <code>python run_experiments_IDS4NR_baselines_algorithms.py --dataset Music --model LFM</code>  </li>
 </ul>
 
+<h5>Disentangled Contrastive Collaborative Filtering (DCCF)</h5>
+<ul>
+<li>Run this command to reproduce the experiments for the DCCF and baseline models on the AmazonBook dataset: <code>python run_experiments_for_DCCF_baselines_algorithms.py --dataset amazonBook</code>  </li>
+
+<li>Run this command to reproduce the experiments for the DCCF and baseline models on the Gowalla dataset: <code>python run_experiments_for_DCCF_baselines_algorithms.py --dataset gowalla</code>  </li>
+
+<li>Run this command to reproduce the experiments for the DCCF and baseline models on the Tmall dataset: <code>python run_experiments_for_DCCF_baselines_algorithms.py --dataset tmall</code>  </li>
+
+
+<h5>Bilateral Intent-guided Graph Collaborative Filtering (BIGCF)</h5>
+<ul>
+<li>Run this command to reproduce the experiments for the BIGCF model on the AmazonBook dataset: <code>python run_experiments_for_BIGCF_algorithms.py --dataset amazonBook</code>  </li>
+
+<li>Run this command to reproduce the experiments for the BIGCF model on the Gowalla dataset: <code>python run_experiments_for_BIGCF_algorithms.py --dataset gowalla</code>  </li>
+
+<li>Run this command to reproduce the experiments for the BIGCF model on the Tmall dataset: <code>python run_experiments_for_BIGCF_algorithms.py --dataset tmall</code>  </li>
+
+
+</ul>
+
 
 
 <h5>Disentangled Graph Collaborative Filtering (DGCF)</h5>
@@ -114,6 +134,7 @@
 <li>Run this command to reproduce the experiments for the baseline models on the Gowalla dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset gowalla</code></li>
 <li>Run this command to reproduce the experiments for the DGCF on the Amazon-book dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset amazonbook</code></li>
 <li>Run this command to reproduce the experiments for the baseline models on the Amazon-book dataset: <code>python run_experiments_DGCF_baseline_algorithms.py --dataset amazonbook</code><li>
+
 
 <h5>Note: The DGCF was implemented using TensorFlow 1.14, which does not support current versions of Python. Therefore, we provide a separate installation guide to run the experiments for DGCF model</h5>
 

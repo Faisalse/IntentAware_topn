@@ -22,13 +22,12 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
         recommender_object = recommender_class(URM_train)
     return recommender_object
 
-def run_experiments(dataset = "gowalla"):
+if __name__ == '__main__':
+
     parser = argparse.ArgumentParser(description='Accept data name as input')
     parser.add_argument('--dataset', type = str, default='gowalla', help="tmall / gowalla / amazonBook")
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
     args = parser.parse_args()
-
-    args.dataset = dataset # after experiments make it normal....
 
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -94,7 +93,7 @@ def run_experiments(dataset = "gowalla"):
         RP3alpha_best_HP = {"topK": 100, "alpha": 1, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 350, "alpha": 0.7681732734954694, "beta": 0.4181395996963926, "normalize_similarity": True}
         
-    elif args.dataset == "amazonbook":
+    elif args.dataset == "amazonBook":
         itemkNN_best_HP = {"topK": 125, "similarity": "cosine"}
         userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
@@ -122,6 +121,7 @@ def run_experiments(dataset = "gowalla"):
                 fit_params = {"topK": RP3beta_best_HP["topK"], "alpha": RP3beta_best_HP["alpha"], "beta": RP3beta_best_HP["beta"], "normalize_similarity": RP3beta_best_HP["normalize_similarity"]}
             else: # get defaut parameters...........
                 fit_params = {}
+
             # measure training time.....
             start = time.time()
             recommender_object.fit(**fit_params)
@@ -138,7 +138,6 @@ def run_experiments(dataset = "gowalla"):
             results_run_1["AverageTestingTimeForOneRecord(s)"] = [averageTestingForOneRecord] + [0 for i in range(results_run_1.shape[0] - 1)]
 
             print("Algorithm: {}, results: \n{}".format(recommender_class, results_run_string_1))
-            
             results_run_1["cuttOff"] = results_run_1.index
             results_run_1.insert(0, 'cuttOff', results_run_1.pop('cuttOff'))
             results_run_1.to_csv(saved_results+"/"+args.dataset+"_"+recommender_class.RECOMMENDER_NAME+".txt", sep = "\t", index = False)
@@ -146,12 +145,6 @@ def run_experiments(dataset = "gowalla"):
 
         except Exception as e:
             traceback.print_exc()
-            
-if __name__ == '__main__':
-    experiments = ["gowalla", "amazonbook", "tmall"]
-    
-    for data in experiments:
-        run_experiments(dataset = data)
             
     ################################ END ##################################
     

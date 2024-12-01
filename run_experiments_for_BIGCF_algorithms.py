@@ -7,15 +7,15 @@ import pandas as pd
 import argparse
 import os
 
-def run_experiments(dataset = "gowalla"):
+if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='gowalla', help="amazonbook / gowalla / tmall")
-    parser.add_argument('--epoch', type = int, default=200, help="amazonbook / gowalla / tmall")
+    parser.add_argument('--dataset', type = str, default='gowalla', help="amazonBook / gowalla / tmall")
+    parser.add_argument('--epoch', type = int, default=200, help="Number Of epoch")
     parser.add_argument('--ssl_reg', type=float, default=0.2, help='Reg weight for ssl loss')
     parser.add_argument('--Ks', nargs='?', default='[1, 5, 10, 20, 40, 50, 100]', help='Metrics scale')
+    parser.add_argument('--ES', type=bool, default= False, help='Metrics scale')
     args = parser.parse_args()
     
-    args.dataset = dataset # after experiments make it normal....
     if args.dataset == "gowalla":
         args.epoch = 150
         args.ssl_reg = 0.4
@@ -45,21 +45,18 @@ def run_experiments(dataset = "gowalla"):
     UCM_all = None
     NumberOfUserInTestingData = URM_test.shape[0] - np.sum(np.diff(URM_test.indptr) == 0)
     ############### END #############################################
-    
-    best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = args.epoch, ssl_reg = args.ssl_reg, ks = args.Ks)
-    print("Start tuning by Best Epoch Value"+str(best_epoch))
-    metrics_dic = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, 
-                                                           epoch = best_epoch, ssl_reg = args.ssl_reg, ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
+    if args.ES:
+        best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = args.epoch, ssl_reg = args.ssl_reg, ks = args.Ks)
+        print("Start tuning by Best Epoch Value"+str(best_epoch))
+        metrics_dic = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, 
+                                                            epoch = best_epoch, ssl_reg = args.ssl_reg, ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
+    else:
+        metrics_dic = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, 
+                                                            epoch = args.epoch, ssl_reg = args.ssl_reg, ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
     
     expanded_data = [(key, value) for key, value in metrics_dic.items()]
     df = pd.DataFrame(expanded_data, columns=['Measures', 'Values'])
     df.to_csv(saved_results + "/"+args.dataset+"_BIGCF.txt", index = False)
-    
-if __name__ == '__main__':
-
-    experiments = ["amazonBook", "gowalla", "tmall"]
-    for data in experiments:
-        run_experiments(dataset = data)
     
     
     

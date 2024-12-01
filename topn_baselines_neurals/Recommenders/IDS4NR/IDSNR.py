@@ -21,7 +21,7 @@ from skopt import gp_minimize
 from skopt.space import Real, Integer, Categorical
 from skopt.utils import use_named_args
 from functools import partial
-
+import time
 from skopt import forest_minimize
 from skopt.learning import GaussianProcessRegressor
 from skopt.learning.gaussian_process.kernels import RBF
@@ -225,15 +225,22 @@ class EarlyStopping:
             self.counter = 0
 
 class Run_experiments_for_IDSNR:
-    def __init__(self,model = "NCF", dataset = "MovieLens"):
+
+    def __init__(self,model = "NCF", dataset = "MovieLens", NumberOfUsersInTestingData = 943):
         # get best epoch through stopping mechanism
         obj = IDSNR_model(model = model, data = dataset, validation = True)
         best_score, stopped_epoch =  obj.model_tuninig(100)
         stopped_epoch = stopped_epoch + 1
         print("Best Epoch Value    "+ str(stopped_epoch))
+        
+        start = time.time()
         obj = IDSNR_model(model = model,data = dataset, validation = False)
         model = obj.model_tuninig(stopped_epoch)
+        trainingTime = time.time() - start
+
+        start = time.time()
         obj.predict_(model)
+        testingTime = time.time() - start
         df = pd.DataFrame()
 
         for key in obj.accuracy_measure_dict:
@@ -242,9 +249,13 @@ class Run_experiments_for_IDSNR:
         for key in obj.beyond_accuracy_measure_dict:
             print(key +"  "+  str(obj.beyond_accuracy_measure_dict[key].getScore())) 
             df[key] = [obj.beyond_accuracy_measure_dict[key].getScore()]
+        
+        df["TrainingTime(s)"] = [trainingTime]
+        df["TestingTime(s)"] = [testingTime]
+        df["AverageTestingTime(ms)"] = [(testingTime / NumberOfUsersInTestingData) * 1000]
         self.accuracy_values  = df
         
-#obj1 = Run_experiments_for_IDSNR(model = "NCF", dataset = "MovieLens")
+
 
 
 

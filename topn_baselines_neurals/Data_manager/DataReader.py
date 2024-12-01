@@ -103,46 +103,6 @@ class DataReader(object):
         :return: original or k_cores etc...
         """
         return self.DATASET_SUBFOLDER_ORIGINAL
-    
-    def convert_dictionary_to_dataFrame(self, train_list, test_list, user_content_dictionary):
-        full_data = dict()
-        train_list = train_list
-        test_list = test_list
-        for i in range(len(train_list)):
-            
-            temp = train_list[i]
-            temp.update(test_list[i])
-            full_data[i] = temp
-            
-        expanded_data = [(key, value) for key, values in full_data.items() for value in values]
-        # Create DataFrame
-        URM_dataframe = pd.DataFrame(expanded_data, columns=['UserID', 'ItemID'])
-        URM_dataframe["Data"] = 1
-        
-        URM_dataframe['UserID']= URM_dataframe['UserID'].astype(str)
-        URM_dataframe['ItemID']= URM_dataframe['ItemID'].astype(str)
-        
-        
-        user_list = [ value for key,value in user_content_dictionary.items()]
-        temp_user_dict = dict()
-        user_list = user_list[1:]
-        
-        for i in range(len(user_list)):
-            temp_user_dict[i] = user_list[i]
-            
-        
-        expanded_user = [(key, value)  for key, values in temp_user_dict.items() for value in values]
-        UCM_dataframe = pd.DataFrame(expanded_user, columns=['UserID', 'FeatureID'])
-        UCM_dataframe["Data"] = 1
-        
-        UCM_dataframe['UserID']= UCM_dataframe['UserID'].astype(str)
-        UCM_dataframe['FeatureID']= UCM_dataframe['FeatureID'].astype(str)
-        
-        
-        
-        
-        
-        return URM_dataframe, UCM_dataframe
             
 
 
