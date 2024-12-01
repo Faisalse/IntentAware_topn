@@ -111,7 +111,7 @@
 <li>Run this command to reproduce the experiments for the DCCF and baseline models on the Gowalla dataset: <code>python run_experiments_for_DCCF_baselines_algorithms.py --dataset gowalla</code>  </li>
 
 <li>Run this command to reproduce the experiments for the DCCF and baseline models on the Tmall dataset: <code>python run_experiments_for_DCCF_baselines_algorithms.py --dataset tmall</code>  </li>
-
+</ul>
 
 <h5>Bilateral Intent-guided Graph Collaborative Filtering (BIGCF)</h5>
 <ul>
@@ -120,8 +120,6 @@
 <li>Run this command to reproduce the experiments for the BIGCF model on the Gowalla dataset: <code>python run_experiments_for_BIGCF_algorithms.py --dataset gowalla</code>  </li>
 
 <li>Run this command to reproduce the experiments for the BIGCF model on the Tmall dataset: <code>python run_experiments_for_BIGCF_algorithms.py --dataset tmall</code>  </li>
-
-
 </ul>
 
 
