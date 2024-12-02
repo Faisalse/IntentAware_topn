@@ -120,7 +120,7 @@
 <li>Run this command to reproduce the experiments for the BIGCF model on the Gowalla dataset: <code>python run_experiments_for_BIGCF_algorithm.py --dataset gowalla</code>  </li>
 
 <li>Run this command to reproduce the experiments for the BIGCF model on the Tmall dataset: <code>python run_experiments_for_BIGCF_algorithm.py --dataset tmall</code>  </li>
-<li>Note: The BIGCF model used the same train-test splits for all datasets shared by the DCCF model. Therefore, we do not need to rerun the experiments for the baseline models</li>
+<li><b>Note:</b> The BIGCF model used the same train-test splits for all datasets shared by the DCCF model. Therefore, we do not need to rerun the experiments for the baseline models</li>
 </ul>
 
 
