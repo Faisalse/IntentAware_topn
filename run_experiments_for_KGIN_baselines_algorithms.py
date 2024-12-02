@@ -20,7 +20,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
     parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=True, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -75,7 +75,6 @@ if __name__ == '__main__':
         epoch = 579 # epoch value is taken from the provided training logs.....
     else:
         pass
-    
     ############### BASELINE MODELS DATA PREPARATION ###############
     validation_set = False
     dataset_object = lastFM_AmazonBook_AliBabaFashion_KGIN()
@@ -114,7 +113,6 @@ if __name__ == '__main__':
         P3alphaRecommender,
         RP3betaRecommender,
         EASE_R_Recommender
-
         ]
 
     if args.dataset == "alibabaFashion": # get optimal values.........
@@ -129,20 +127,11 @@ if __name__ == '__main__':
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.7681732734954694, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 350, "alpha": 0.7681732734954694, "beta": 0.4181395996963926, "normalize_similarity": True}
         
-    elif args.dataset == "amazonbook":
+    elif args.dataset == "amazonBook":
         itemkNN_best_HP = {"topK": 125, "similarity": "cosine", "shrink": 1000, "normalize": True}
         userkNN_best_HP = {"topK": 454, "similarity": "cosine", "shrink": 1000, "normalize": True}
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
-
-        recommender_class_list = [
-        Random,
-        TopPop,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender,
-        P3alphaRecommender,
-        RP3betaRecommender
-        ]
     
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
     for recommender_class in recommender_class_list:

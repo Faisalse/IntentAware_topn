@@ -59,7 +59,7 @@
             </tbody>
         </table>
 
-        <br> <br>
+        <br>
         <h3>Optimal hyperparameter values</h3>
         <table>
             
@@ -128,7 +128,7 @@
                     <td align="center">1e<sup>3</sup></td>
                 </tr>
             </tbody>
-        </table> <br> <br>
+        </table> <br>
         <h3>Statistics of the provided train-test splits</h3>
         <table>
             <thead>
@@ -160,7 +160,8 @@
                 </tr>
             </tbody>
         </table>
-        <br><br>
+
+        <br>
         <h3>Full result table</h3>
         
         <table style="text-align: center;">
@@ -317,7 +318,7 @@
             </tbody>
           </table>
 	</div>
-
+    
 	<div id="LastFm" class="tab-pane fade">
 
         <br>
@@ -366,7 +367,7 @@
                     <td align="center">&mdash;</td>
                     <td align="center">&mdash;</td>
                 </tr>
-
+    
                 <tr>
                     <td align="center">RP<sub>3</sub>β</td>
                     <td align="center">350</td>
@@ -420,7 +421,181 @@
                 </tr>
             </tbody>
         </table>
-        <br><br>
+        <br>
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h3>Full result table</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Algorithms</th>
+                <th>Recall@1</th>
+                <th>Recall@5</th>
+                <th>Recall@10</th>
+                <th>Recall@20</th>
+                <th>Recall@100</th>
+                <th>NDCG@1</th>
+                <th>NDCG@5</th>
+                <th>NDCG@10</th>
+                <th>NDCG@20</th>
+                <th>NDCG@100</th>
+                <th>T-Time(s)</th>
+                <th>P-Time(s)</th>
+                <th>Average P-Time Per User(ms)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Random</td>
+                <td>0.0000</td>
+                <td>0.0001</td>
+                <td>0.0002</td>
+                <td>0.0005</td>
+                <td>0.0021</td>
+                <td>0.0006</td>
+                <td>0.0005</td>
+                <td>0.0005</td>
+                <td>0.0005</td>
+                <td>0.0011</td>
+                <td>0.0000</td>
+                <td>48.8780</td>
+                <td>2.0740</td>
+            </tr>
+            <tr>
+                <td>TopPop</td>
+                <td>0.001</td>
+                <td>0.007</td>
+                <td>0.012</td>
+                <td>0.022</td>
+                <td>0.056</td>
+                <td>0.021</td>
+                <td>0.017</td>
+                <td>0.017</td>
+                <td>0.020</td>
+                <td>0.030</td>
+                <td>0.012</td>
+                <td>42.499</td>
+                <td>1.803</td>
+            </tr>
+            <tr>
+                <td>UserkNN</td>
+                <td>0.023</td>
+                <td>0.073</td>
+                <td>0.100</td>
+                <td>0.130</td>
+                <td>0.200</td>
+                <td>0.184</td>
+                <td>0.151</td>
+                <td>0.144</td>
+                <td>0.143</td>
+                <td>0.159</td>
+                <td>55.989</td>
+                <td>38.528</td>
+                <td>1.634</td>
+            </tr>
+            <tr>
+                <td>ItemkNN</td>
+                <td>0.026</td>
+                <td>0.093</td>
+                <td>0.134</td>
+                <td>0.182</td>
+                <td>0.321</td>
+                <td>0.194</td>
+                <td>0.173</td>
+                <td>0.172</td>
+                <td>0.179</td>
+                <td>0.222</td>
+                <td>96.762</td>
+                <td>43.387</td>
+                <td>1.841</td>
+            </tr>
+            <tr>
+                <td>alpha</td>
+                <td>0.029</td>
+                <td>0.099</td>
+                <td>0.142</td>
+                <td>0.194</td>
+                <td>0.333</td>
+                <td>0.225</td>
+                <td>0.193</td>
+                <td>0.190</td>
+                <td>0.196</td>
+                <td>0.237</td>
+                <td>89.415</td>
+                <td>45.625</td>
+                <td>1.936</td>
+            </tr>
+            <tr>
+                <td>beta</td>
+                <td>0.027</td>
+                <td>0.097</td>
+                <td>0.140</td>
+                <td>0.189</td>
+                <td>0.324</td>
+                <td>0.201</td>
+                <td>0.180</td>
+                <td>0.180</td>
+                <td>0.187</td>
+                <td>0.228</td>
+                <td>79.998</td>
+                <td>46.850</td>
+                <td>1.988</td>
+            </tr>
+            <tr>
+                <td>EASE</td>
+                <td>0.027</td>
+                <td>0.094</td>
+                <td>0.135</td>
+                <td>0.185</td>
+                <td>0.324</td>
+                <td>0.206</td>
+                <td>0.180</td>
+                <td>0.178</td>
+                <td>0.184</td>
+                <td>0.226</td>
+                <td>1386.493</td>
+                <td>90.735</td>
+                <td>3.850</td>
+            </tr>
+            <tr>
+                <td>KGIN</td>
+                <td>0.019</td>
+                <td>0.077</td>
+                <td>0.137</td>
+                <td>0.214</td>
+                <td>0.214</td>
+                <td>0.143</td>
+                <td>0.141</td>
+                <td>0.154</td>
+                <td>0.177</td>
+                <td>0.162</td>
+                <td>300845.273</td>
+                <td>151.912</td>
+                <td>6.446</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
 	</div>
 
     <div id="Amazon" class="tab-pane fade">
