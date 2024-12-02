@@ -31,7 +31,7 @@ class IDS4NR_MovleLensBeautyMusic(DataReader):
         return self.DATASET_SUBFOLDER
     
     
-    def _load_data_from_give_files(self, data_path = "MovieLens.pkl", validation = False):
+    def _load_data_from_give_files(self, data_path = "MovieLens.pkl", validation = False, validation_portion = 0.1):
         
         try:
             with open(data_path, 'rb') as file:
@@ -57,7 +57,7 @@ class IDS4NR_MovleLensBeautyMusic(DataReader):
                                                           is_implicit=self.IS_IMPLICIT)
         
         if validation == True:
-            URM_train, URM_test, URM_validation_train, URM_validation_test = split_train_test_validation(loaded_dataset, test_data, validation=validation)
+            URM_train, URM_test, URM_validation_train, URM_validation_test = split_train_test_validation(loaded_dataset, test_data, validation=validation, validation_portion = validation_portion)
             return URM_train, URM_test, URM_validation_train, URM_validation_test, loaded_dataset.AVAILABLE_UCM['UCM_all']
         else:
             URM_train, URM_test = split_train_test_validation(loaded_dataset,test_data,   validation=validation)

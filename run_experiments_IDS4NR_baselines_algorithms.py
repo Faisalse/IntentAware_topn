@@ -18,14 +18,12 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
         recommender_object = recommender_class(URM_train)
     return recommender_object
 
-def tempfun(dataset = "MovieLens"):
+if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='Beauty', help="MovieLens/Music/Beauty")
+    parser.add_argument('--dataset', type = str, default='MovieLens', help="MovieLens/Music/Beauty")
     parser.add_argument('--model', type = str, default='LFM', help="LFM or NCF")
     args = parser.parse_args()
-
-    args.dataset = dataset
     dataset_name = args.dataset
     
     # python run_experiments_IDS4NR_baselines_algorithms.py --dataset MovieLens --model NCF
@@ -54,10 +52,9 @@ def tempfun(dataset = "MovieLens"):
     saved_results = "/".join([resultFolder,"ID4SNR",dataset_name] )
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
-    output_root_path = saved_results+"/"
-    # Run experiments for IDS4NR
     
     
+
     recommender_class_list = [
         Random,
         TopPop,
@@ -66,49 +63,65 @@ def tempfun(dataset = "MovieLens"):
         P3alphaRecommender,
         RP3betaRecommender,
         EASE_R_Recommender
-
         ]
     
-    
-    
-    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 50, 100], exclude_seen=True)
+    ##### Best HP values for baseline models.....
+    if args.dataset == "MovieLens":
+        itemkNN_best_HP  = {"topK": 508, "similarity": "cosine"}
+        userkNN_best_HP  = {"topK": 146, "similarity": "cosine"}
+        RP3alpha_best_HP = {"topK": 777, "alpha": 1.087096950563704, "normalize_similarity": False}
+        RP3beta_best_HP  = {"topK": 777, "alpha": 0.5663562161452378, "beta": 0.001085447926739258, "normalize_similarity": True}
+        
+    elif args.dataset == "Music":
+        itemkNN_best_HP = {"topK": 516, "similarity": "cosine"}
+        userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
+        RP3alpha_best_HP = {"topK": 100, "alpha": 1, "normalize_similarity": False}
+        RP3beta_best_HP = {"topK": 350, "alpha": 0.7681732734954694, "beta": 0.4181395996963926, "normalize_similarity": True}
+        
+    elif args.dataset == "Beauty":
+        itemkNN_best_HP = {"topK": 125, "similarity": "cosine"}
+        userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
+        RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
+        RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
+        
+
+    evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
     for recommender_class in recommender_class_list:
         try:
             print("Algorithm: {}".format(recommender_class))
             recommender_object = _get_instance(recommender_class, URM_train, ICM_all, UCM_all)
+            if isinstance(recommender_object, Incremental_Training_Early_Stopping):
+                fit_params = {"epochs": 15}
 
+            if isinstance(recommender_object, ItemKNNCFRecommender):
+                fit_params = {"topK": itemkNN_best_HP["topK"], "similarity": itemkNN_best_HP["similarity"]}
+
+            elif isinstance(recommender_object, UserKNNCFRecommender):
+                fit_params = {"topK": userkNN_best_HP["topK"],  "similarity": userkNN_best_HP["similarity"]}
             
-            if(dataset_name == "Music"):
-                if isinstance(recommender_object, RP3betaRecommender):
-                    fit_params = {"topK": 814, "alpha": 0.13435726416026783, "beta": 0.27678107504384436, "normalize_similarity": True}
-                else:
-                    fit_params = {}
-            elif(dataset_name == "Beauty"):
-                print("********************************")
-                if isinstance(recommender_object, P3alphaRecommender):
-                    fit_params = {"topK": 790, "alpha": 0.0, "normalize_similarity": False}
-                elif isinstance(recommender_object, RP3betaRecommender):
-                    fit_params = {"topK": 1000, "alpha": 0.0, "beta": 0.0, "normalize_similarity": False}
-                else:
-                    fit_params = {}
-            else:
+            elif isinstance(recommender_object, P3alphaRecommender):
+                fit_params = {"topK": RP3alpha_best_HP["topK"], "alpha": RP3alpha_best_HP["alpha"], "normalize_similarity": RP3alpha_best_HP["normalize_similarity"]}
+            
+            elif isinstance(recommender_object, RP3betaRecommender):
+                fit_params = {"topK": RP3beta_best_HP["topK"], "alpha": RP3beta_best_HP["alpha"], "beta": RP3beta_best_HP["beta"], "normalize_similarity": RP3beta_best_HP["normalize_similarity"]}
+            else: # get defaut parameters...........
                 fit_params = {}
 
             # measure training time.....
             start = time.time()
             recommender_object.fit(**fit_params)
             training_time = time.time() - start
-            
+
             # testing for all records.....
             start = time.time()
             results_run_1, results_run_string_1 = evaluator.evaluateRecommender(recommender_object)
             testing_time = time.time() - start
-            averageTestingForOneRecord = (testing_time / len(URM_test.getnnz(axis=1) > 0)) * 1000 # get number of non-zero rows in test data
+            averageTestingForOneRecord = testing_time / len(URM_test.getnnz(axis=1) > 0) # get number of non-zero rows in test data
         
             results_run_1["TrainingTime(s)"] = [training_time] + [0 for i in range(results_run_1.shape[0] - 1)]
             results_run_1["TestingTimeforRecords(s)"] = [testing_time] + [0 for i in range(results_run_1.shape[0] - 1)]
-            results_run_1["AverageTestingTimeForOneRecord(ms)"] = [averageTestingForOneRecord] + [0 for i in range(results_run_1.shape[0] - 1)]
-            
+            results_run_1["AverageTestingTimeForOneRecord(s)"] = [averageTestingForOneRecord] + [0 for i in range(results_run_1.shape[0] - 1)]
+
             print("Algorithm: {}, results: \n{}".format(recommender_class, results_run_string_1))
             results_run_1["cuttOff"] = results_run_1.index
             results_run_1.insert(0, 'cuttOff', results_run_1.pop('cuttOff'))
@@ -116,11 +129,12 @@ def tempfun(dataset = "MovieLens"):
 
         except Exception as e:
             pass
+
+    """
     obj1 = Run_experiments_for_IDSNR(model = args.model, dataset = data_path / datasetName, NumberOfUsersInTestingData = URM_test.shape[0])
     accuracy_measure = obj1.accuracy_values
-    accuracy_measure.to_csv(output_root_path+args.dataset+"__"+args.model+".txt", index = False, sep = "\t")
+    accuracy_measure.to_csv(saved_results+"/"+args.dataset+"__"+args.model+".txt", index = False, sep = "\t")
 
-if __name__ == '__main__':
-    listt = ["MovieLens",  "Music", "Beauty"]
-    for data in listt:
-        tempfun(dataset = data)
+    """
+
+

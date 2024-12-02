@@ -49,10 +49,10 @@ if __name__ == '__main__':
     
     ############### RUN EXPERIMENTS FOR DCCF ########################
     
-    #best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks, NumberOfUserInTestingData = 0)
-    #print("Start tuning by Best Epoch Value"+str(best_epoch))
+    best_epoch = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=True, epoch = 500, ks = args.Ks, NumberOfUserInTestingData = 0)
+    print("Start tuning by Best Epoch Value"+str(best_epoch))
     metrics_dic = model_tuningAndTraining(dataset_name=dataset_name, path =data_path, validation=False, epoch = 
-                                                           1 , ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
+                                                           best_epoch , ks = args.Ks, NumberOfUserInTestingData = NumberOfUserInTestingData)
     
     for key, value in metrics_dic.items():
         print(str(key)+": "+str(value))
@@ -98,6 +98,15 @@ if __name__ == '__main__':
         userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
+
+        recommender_class_list = [
+        Random,
+        TopPop,
+        ItemKNNCFRecommender,
+        UserKNNCFRecommender,
+        P3alphaRecommender,
+        RP3betaRecommender
+        ]
         
 
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)

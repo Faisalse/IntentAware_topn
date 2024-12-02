@@ -20,8 +20,8 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='amazonBook', help="alibabaFashion / amazonBook / lastFm")
-    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=True, help="False / True")
+    parser.add_argument('--dataset', type = str, default='alibabaFashion', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=False, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
     print("<<<<<<<<<<<<<<<<<<<<<< Experiments are running for  "+dataset_name+" dataset Wait for results......")
@@ -106,13 +106,13 @@ if __name__ == '__main__':
     ############### RUN EXPERIMENTS FOR BASELINE MODELS ###############
     recommender_class_list = [
 
-        Random,
-        TopPop,
-        ItemKNNCFRecommender,
-        UserKNNCFRecommender,
-        P3alphaRecommender,
-        RP3betaRecommender,
-        EASE_R_Recommender
+        #Random,
+        #TopPop,
+        #ItemKNNCFRecommender,
+        UserKNNCFRecommender
+        #P3alphaRecommender,
+        #RP3betaRecommender,
+        #EASE_R_Recommender
         ]
 
     if args.dataset == "alibabaFashion": # get optimal values.........

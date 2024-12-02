@@ -282,7 +282,7 @@
                 <td>1.510</td>
               </tr>
               <tr>
-                <td>EASE</td>
+                <td>EASE<sup>R</sup></td>
                 <td>0.016</td>
                 <td>0.051</td>
                 <td>0.076</td>
@@ -412,7 +412,7 @@
                     <td style="text-align: center;">48,123</td>
                     <td style="text-align: center;">1,544,131</td>
                     <td style="text-align: center;">0.00136</td>
-                    <td style="text-align: center;">Yes, Effected Users: 17290</td>
+                    <td style="text-align: center;">Yes, Effected users: 17290</td>
                     <td style="text-align: center;">2</td>
                     <td style="text-align: center;">1</td>
                     <td style="text-align: center;">2881</td>
@@ -528,7 +528,7 @@
                 <td>1.841</td>
             </tr>
             <tr>
-                <td>alpha</td>
+                <td>P<sub>3</sub>&alpha;</td>
                 <td>0.029</td>
                 <td>0.099</td>
                 <td>0.142</td>
@@ -560,7 +560,7 @@
                 <td>1.988</td>
             </tr>
             <tr>
-                <td>EASE</td>
+                <td>EASE<sup>R</sup></td>
                 <td>0.027</td>
                 <td>0.094</td>
                 <td>0.135</td>
@@ -701,6 +701,158 @@
                 </tr>
             </tbody>
         </table>
-        <br><br>
+        <br>
+        <h3>Full result table</h3>
+        <table style="text-align: center;">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Algorithms</th>
+                    <th style="text-align: center;">R@1</th>
+                    <th style="text-align: center;">R@5</th>
+                    <th style="text-align: center;">R@10</th>
+                    <th style="text-align: center;">R@20</th>
+                    <th style="text-align: center;">R@100</th>
+                    <th style="text-align: center;">N@1</th>
+                    <th style="text-align: center;">N@5</th>
+                    <th style="text-align: center;">N@10</th>
+                    <th style="text-align: center;">N@20</th>
+                    <th style="text-align: center;">N@100</th>
+                    <th style="text-align: center;">T-Time(s)</th>
+                    <th style="text-align: center;">P-Time(s)</th>
+                    <th style="text-align: center;">Average P-Time Per User(ms)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Random</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.001</td>
+                    <td>0.002</td>
+                    <td>0.004</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.001</td>
+                    <td>0.001</td>
+                    <td>0.000</td>
+                    <td>145.591</td>
+                    <td>2.060</td>
+                </tr>
+                <tr>
+                    <td>TopPop</td>
+                    <td>0.002</td>
+                    <td>0.007</td>
+                    <td>0.012</td>
+                    <td>0.029</td>
+                    <td>0.091</td>
+                    <td>0.003</td>
+                    <td>0.005</td>
+                    <td>0.007</td>
+                    <td>0.012</td>
+                    <td>0.026</td>
+                    <td>0.013</td>
+                    <td>133.699</td>
+                    <td>1.892</td>
+                </tr>
+                <tr>
+                    <td>ItemkNN</td>
+                    <td>0.029</td>
+                    <td>0.085</td>
+                    <td>0.121</td>
+                    <td>0.164</td>
+                    <td>0.297</td>
+                    <td>0.056</td>
+                    <td>0.070</td>
+                    <td>0.084</td>
+                    <td>0.097</td>
+                    <td>0.128</td>
+                    <td>74.114</td>
+                    <td>132.712</td>
+                    <td>1.878</td>
+                </tr>
+                <tr>
+                    <td>UserkNN</td>
+                    <td>0.026</td>
+                    <td>0.079</td>
+                    <td>0.116</td>
+                    <td>0.160</td>
+                    <td>0.301</td>
+                    <td>0.049</td>
+                    <td>0.064</td>
+                    <td>0.078</td>
+                    <td>0.092</td>
+                    <td>0.124</td>
+                    <td>264.982</td>
+                    <td>137.988</td>
+                    <td>1.952</td>
+                </tr>
+                <tr>
+                    <td>P<sub>3</sub>&alpha;</td>
+                    <td>0.026</td>
+                    <td>0.080</td>
+                    <td>0.118</td>
+                    <td>0.166</td>
+                    <td>0.323</td>
+                    <td>0.050</td>
+                    <td>0.065</td>
+                    <td>0.079</td>
+                    <td>0.094</td>
+                    <td>0.130</td>
+                    <td>34.924</td>
+                    <td>134.767</td>
+                    <td>1.907</td>
+                </tr>
+                <tr>
+                    <td>RP<sub>3</sub>&beta;</td>
+                    <td>0.025</td>
+                    <td>0.074</td>
+                    <td>0.105</td>
+                    <td>0.144</td>
+                    <td>0.270</td>
+                    <td>0.047</td>
+                    <td>0.061</td>
+                    <td>0.072</td>
+                    <td>0.084</td>
+                    <td>0.113</td>
+                    <td>37.803</td>
+                    <td>135.821</td>
+                    <td>1.922</td>
+                </tr>
+                <tr>
+                    <td>EASE<sup>R</sup></td>
+                    <td>0.026</td>
+                    <td>0.079</td>
+                    <td>0.116</td>
+                    <td>0.161</td>
+                    <td>0.308</td>
+                    <td>0.050</td>
+                    <td>0.065</td>
+                    <td>0.079</td>
+                    <td>0.092</td>
+                    <td>0.126</td>
+                    <td>314.753</td>
+                    <td>159.325</td>
+                    <td>2.254</td>
+                </tr>
+                <tr>
+                    <td>KGIN</td>
+                    <td>0.008</td>
+                    <td>0.047</td>
+                    <td>0.089</td>
+                    <td>0.143</td>
+                    <td>0.143</td>
+                    <td>0.015</td>
+                    <td>0.032</td>
+                    <td>0.048</td>
+                    <td>0.065</td>
+                    <td>0.065</td>
+                    <td>209312.699</td>
+                    <td>241.714</td>
+                    <td>3.424</td>
+                </tr>
+            </tbody>
+        </table>
+        
 	</div>
 </div>
