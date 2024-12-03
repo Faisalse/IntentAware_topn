@@ -17,8 +17,7 @@ import numpy as np
 
 def run_experiments_for_INS4NR_Model():
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='Beauty', help="MovieLens/Music/Beauty")
-
+    parser.add_argument('--dataset', type = str, default='MovieLens', help="MovieLens/Music/Beauty")
     args = parser.parse_args()
     dataset_name = args.dataset
     model = "ID4SNR"
@@ -49,15 +48,15 @@ def run_experiments_for_INS4NR_Model():
     ]
 
     from topn_baselines_neurals.Evaluation.Evaluator import EvaluatorHoldout
-    cutoff_list = [20]
+    cutoff_list = [10]
     metric_to_optimize = "RECALL"
-    cutoff_to_optimize = 20
+    cutoff_to_optimize = 10
     n_cases = 50
     n_random_starts = 5
-
-    evaluator_validation = EvaluatorHoldout(URM_test, cutoff_list = cutoff_list)
+    
+    evaluator_validation = EvaluatorHoldout(URM_validation_test, cutoff_list = cutoff_list)
     runParameterSearch_Collaborative_partial = partial(runHyperparameterSearch_Collaborative,
-                                                       URM_train = URM_train,
+                                                       URM_train = URM_validation_train,
                                                        metric_to_optimize = metric_to_optimize,
                                                        cutoff_to_optimize = cutoff_to_optimize,
                                                        n_cases = n_cases,
@@ -67,7 +66,7 @@ def run_experiments_for_INS4NR_Model():
                                                        output_folder_path = saved_results,
                                                        resume_from_saved = True,
                                                        parallelizeKNN = False, allow_weighting = True,
-                                                       similarity_type_list = ['cosine', 'jaccard', "asymmetric", "dice", "tversky"]
+                                                       similarity_type_list = ['cosine']
                                                        )
 
 

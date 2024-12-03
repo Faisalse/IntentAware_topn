@@ -123,8 +123,6 @@
 <li><b>Note:</b> The BIGCF model used the same train-test splits for all datasets shared by the DCCF model. Therefore, we do not need to rerun the experiments for the baseline models</li>
 </ul>
 
-
-
 <h5>Disentangled Graph Collaborative Filtering (DGCF)</h5>
 <ul>
 <li>Run this command to reproduce the experiments for the DGCF on the Yelp2018 dataset: <code>python run_experiments_for_DGCF_algorithm.py --dataset yelp2018</code></li>

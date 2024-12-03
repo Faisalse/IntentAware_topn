@@ -11,7 +11,6 @@ import zipfile, shutil
 from topn_baselines_neurals.Data_manager.DataReader import DataReader
 from topn_baselines_neurals.Data_manager.DataReader_utils import download_from_URL
 from topn_baselines_neurals.Data_manager.DatasetMapperManager import DatasetMapperManager
-from topn_baselines_neurals.Data_manager.Movielens._utils_movielens_parser import _loadURM, _loadICM_genres_years
 import pickle
 from topn_baselines_neurals.Data_manager.split_functions.ieee_transactions_given_train_test_splits import split_train_test_validation
 

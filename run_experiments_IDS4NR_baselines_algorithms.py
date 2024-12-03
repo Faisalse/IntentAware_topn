@@ -1,4 +1,3 @@
-
 from topn_baselines_neurals.Recommenders.Recommender_import_list import *
 from topn_baselines_neurals.Recommenders.Incremental_Training_Early_Stopping import Incremental_Training_Early_Stopping
 from topn_baselines_neurals.Recommenders.BaseCBFRecommender import BaseItemCBFRecommender, BaseUserCBFRecommender
@@ -21,7 +20,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='MovieLens', help="MovieLens/Music/Beauty")
+    parser.add_argument('--dataset', type = str, default='Beauty', help="MovieLens/Music/Beauty")
     parser.add_argument('--model', type = str, default='LFM', help="LFM or NCF")
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -40,8 +39,8 @@ if __name__ == '__main__':
     datasetName = args.dataset+".pkl"
     dataset_object = IDS4NR_MovleLensBeautyMusic()
     URM_train, URM_test, UCM_all = dataset_object._load_data_from_give_files(data_path = data_path / datasetName)
-    ICM_all = None
-
+    
+    # count statistics of dataset...........
     total_elements = URM_train.shape[0] * URM_train.shape[1]
     non_zero_elements = URM_train.nnz + URM_test.nnz
     density = non_zero_elements / total_elements
@@ -53,8 +52,6 @@ if __name__ == '__main__':
     if not os.path.exists(saved_results):
         os.makedirs(saved_results)
     
-    
-
     recommender_class_list = [
         Random,
         TopPop,
@@ -67,43 +64,51 @@ if __name__ == '__main__':
     
     ##### Best HP values for baseline models.....
     if args.dataset == "MovieLens":
-        itemkNN_best_HP  = {"topK": 508, "similarity": "cosine"}
-        userkNN_best_HP  = {"topK": 146, "similarity": "cosine"}
-        RP3alpha_best_HP = {"topK": 777, "alpha": 1.087096950563704, "normalize_similarity": False}
-        RP3beta_best_HP  = {"topK": 777, "alpha": 0.5663562161452378, "beta": 0.001085447926739258, "normalize_similarity": True}
+        itemkNN_best_HP = {"topK": 805, "similarity": "cosine", "shrink": 544, "normalize": True, "feature_weighting": "BM25"}
+        userkNN_best_HP = {"topK": 1000, "similarity": "cosine", "shrink": 1000, "normalize": True, "feature_weighting": "BM25"}
+        RP3alpha_best_HP = {"topK": 117, "alpha": 0.4490914092362502, "normalize_similarity": True}
+        RP3beta_best_HP = {"topK": 479, "alpha": 0.41257885094571617, "beta": 0.6050046063241745, "normalize_similarity": True}
+        EASE_BestHP = {"topK": None, "l2_norm":  210.9260335725507, "normalize_matrix": False}
         
     elif args.dataset == "Music":
-        itemkNN_best_HP = {"topK": 516, "similarity": "cosine"}
-        userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
-        RP3alpha_best_HP = {"topK": 100, "alpha": 1, "normalize_similarity": False}
-        RP3beta_best_HP = {"topK": 350, "alpha": 0.7681732734954694, "beta": 0.4181395996963926, "normalize_similarity": True}
-        
+        itemkNN_best_HP = {"topK": 623, "similarity": "cosine", "shrink": 193, "normalize": True, "feature_weighting": "TF-IDF"}
+        userkNN_best_HP = {"topK": 149, "similarity": "cosine", "shrink": 0, "normalize": True, "feature_weighting": "none"}
+        RP3alpha_best_HP = {"topK": 85, "alpha": 0.4590018257740354, "normalize_similarity": True}
+        RP3beta_best_HP = {"topK": 363, "alpha": 0.45815768400879797, "beta": 0.39431553250158924, "normalize_similarity": False}
+        EASE_BestHP = {"topK": None, "l2_norm":  47.11431042076403, "normalize_matrix": False}
+          
     elif args.dataset == "Beauty":
-        itemkNN_best_HP = {"topK": 125, "similarity": "cosine"}
-        userkNN_best_HP = {"topK": 454, "similarity": "cosine"}
-        RP3alpha_best_HP = {"topK": 496, "alpha": 0.41477903655656115, "normalize_similarity": False}
-        RP3beta_best_HP = {"topK": 496, "alpha": 0.44477903655656115, "beta": 0.5968193614337285, "normalize_similarity": True}
+        itemkNN_best_HP = {"topK": 1000, "similarity": "cosine", "shrink": 1000, "normalize": False, "feature_weighting": "TF-IDF"}
+        userkNN_best_HP = {"topK": 255, "similarity": "cosine", "shrink": 1000, "normalize": False, "feature_weighting": "TF-IDF"}
+        RP3alpha_best_HP = {"topK": 431, "alpha": 0.5496778369228872, "normalize_similarity": False}
+        RP3beta_best_HP = {"topK": 1000, "alpha": 0.5472822005926639, "beta": 0.15218913649100715, "normalize_similarity": False}
+        EASE_BestHP = {"topK": None, "l2_norm":  105.27021898818253, "normalize_matrix": False}
         
+        # SearchBayesianSkopt: New best config found. Config 0: {'topK': 995, 'shrink': 183, 'similarity': 'dice', 'normalize': True}
 
     evaluator = EvaluatorHoldout(URM_test, [1, 5, 10, 20, 40, 50, 100], exclude_seen=True)
     for recommender_class in recommender_class_list:
         try:
             print("Algorithm: {}".format(recommender_class))
-            recommender_object = _get_instance(recommender_class, URM_train, ICM_all, UCM_all)
+            recommender_object = _get_instance(recommender_class, URM_train, None, UCM_all)
             if isinstance(recommender_object, Incremental_Training_Early_Stopping):
                 fit_params = {"epochs": 15}
 
             if isinstance(recommender_object, ItemKNNCFRecommender):
-                fit_params = {"topK": itemkNN_best_HP["topK"], "similarity": itemkNN_best_HP["similarity"]}
+                fit_params = {"topK": itemkNN_best_HP["topK"], "similarity": itemkNN_best_HP["similarity"], "shrink": userkNN_best_HP["shrink"], "normalize": userkNN_best_HP["normalize"]}
 
             elif isinstance(recommender_object, UserKNNCFRecommender):
-                fit_params = {"topK": userkNN_best_HP["topK"],  "similarity": userkNN_best_HP["similarity"]}
+                fit_params = {"topK": userkNN_best_HP["topK"],  "similarity": userkNN_best_HP["similarity"], "shrink": userkNN_best_HP["shrink"], "normalize": userkNN_best_HP["normalize"]}
             
             elif isinstance(recommender_object, P3alphaRecommender):
                 fit_params = {"topK": RP3alpha_best_HP["topK"], "alpha": RP3alpha_best_HP["alpha"], "normalize_similarity": RP3alpha_best_HP["normalize_similarity"]}
             
             elif isinstance(recommender_object, RP3betaRecommender):
                 fit_params = {"topK": RP3beta_best_HP["topK"], "alpha": RP3beta_best_HP["alpha"], "beta": RP3beta_best_HP["beta"], "normalize_similarity": RP3beta_best_HP["normalize_similarity"]}
+            
+            elif isinstance(recommender_object, EASE_R_Recommender):
+                fit_params = {"topK": EASE_BestHP["topK"], "l2_norm":  EASE_BestHP["l2_norm"], "normalize_matrix": EASE_BestHP["normalize_matrix"]}
+            
             else: # get defaut parameters...........
                 fit_params = {}
 
@@ -130,11 +135,11 @@ if __name__ == '__main__':
         except Exception as e:
             pass
 
-    """
+    ################# RUN experiments for IDS4NR model ####################################
     obj1 = Run_experiments_for_IDSNR(model = args.model, dataset = data_path / datasetName, NumberOfUsersInTestingData = URM_test.shape[0])
     accuracy_measure = obj1.accuracy_values
     accuracy_measure.to_csv(saved_results+"/"+args.dataset+"__"+args.model+".txt", index = False, sep = "\t")
 
-    """
+    
 
 
