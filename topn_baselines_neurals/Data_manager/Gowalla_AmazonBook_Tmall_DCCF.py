@@ -95,7 +95,7 @@ class Gowalla_AmazonBook_Tmall_DCCF(DataReader):
             print("Total users: %d, Users with data leakage: %d", (len(train_dictionary), checkLeakage))
 
     def count_interactions_per_user_item(self, df):
-        user_interaction = df.groupby("UserID")["Data"].count()  # count min and max number of interactions of per user and per item
+        user_interaction = df.groupby("UserID")["Data"].count()  # count mi
         item_interaction = df.groupby("ItemID")["Data"].count()
         if user_interaction.empty:
             print("No interactions found for users.")

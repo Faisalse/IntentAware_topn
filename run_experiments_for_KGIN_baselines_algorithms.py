@@ -20,7 +20,7 @@ def _get_instance(recommender_class, URM_train, ICM_all, UCM_all):
     return recommender_object
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Accept data name as input')
-    parser.add_argument('--dataset', type = str, default='alibabaFashion', help="alibabaFashion / amazonBook / lastFm")
+    parser.add_argument('--dataset', type = str, default='lastFm', help="alibabaFashion / amazonBook / lastFm")
     parser.add_argument('--resolveLastFMDataLeakageIssue', type = bool, default=False, help="False / True")
     args = parser.parse_args()
     dataset_name = args.dataset
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
         #Random,
         #TopPop,
-        #ItemKNNCFRecommender,
+        ItemKNNCFRecommender,
         UserKNNCFRecommender
         #P3alphaRecommender,
         #RP3betaRecommender,
@@ -123,7 +123,7 @@ if __name__ == '__main__':
         
     elif args.dataset == "lastFm":  # get optimal values.........
         itemkNN_best_HP = {"topK": 144, "similarity": "cosine", "shrink": 1000, "normalize": True}
-        userkNN_best_HP = {"topK": 83, "similarity": "tversky", "shrink": 258, "normalize": True}
+        userkNN_best_HP = {"topK": 144, "similarity": "cosine", "shrink": 1000, "normalize": True}
         RP3alpha_best_HP = {"topK": 496, "alpha": 0.7681732734954694, "normalize_similarity": False}
         RP3beta_best_HP = {"topK": 350, "alpha": 0.7681732734954694, "beta": 0.4181395996963926, "normalize_similarity": True}
         
